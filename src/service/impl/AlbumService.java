@@ -1,6 +1,7 @@
 package service.impl;
 
 import app.Application;
+import app.Messages;
 import model.Album;
 import service.IAlbumService;
 
@@ -33,12 +34,22 @@ public class AlbumService implements IAlbumService {
 
     @Override
     public boolean insert(Album album) {
-        return Application.self.albumRepository.insert(album);
+        boolean exitCode;
+        try{
+           exitCode = Application.self.albumRepository.insert(album);
+        } catch (Exception e) {
+            throw new IllegalStateException(Messages.ILLEGAL_DATE_ERROR);
+        }
+        return exitCode;
     }
 
     @Override
     public boolean update(Album album) {
-        Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
+        try {
+            Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
+        } catch (Exception e) {
+            throw new IllegalStateException(Messages.ILLEGAL_DATE_ERROR);
+        }
         return Application.self.albumRepository.update(album);
     }
 

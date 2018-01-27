@@ -10,7 +10,7 @@ public interface IAlbumRepository {
 
     List<Album> all() throws SQLException;
     Album getBy(long id) throws SQLException;
-    boolean insert(Album album);
+    boolean insert(Album album) throws Exception;
     boolean update(Album album);
 //    boolean delete(Album album);
     //boolean save(Album album);

@@ -106,7 +106,7 @@ public class Album {
 
     public Musician getManager() {
         if (manager == null) {
-            // TODO: retrieve from DB
+            manager = Application.self.musicianService.getBy(this);
         }
         return manager;
     }

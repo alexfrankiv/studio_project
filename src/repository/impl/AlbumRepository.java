@@ -1,14 +1,14 @@
 package repository.impl;
 
+import app.Application;
+import app.Constants;
 import app.DBConnector;
 import model.Album;
 import repository.IAlbumRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AlbumRepository implements IAlbumRepository {
@@ -32,14 +32,29 @@ public class AlbumRepository implements IAlbumRepository {
     }
 
     @Override
-    public boolean insert(Album album) {
-//        Connection
-        return false;
+    public boolean insert(Album album) throws Exception {
+        Connection c = DBConnector.shared.getConnect();
+        PreparedStatement statement = c.prepareStatement(insertQ);
+        statement.setString(1, album.getName());
+        statement.setDate(2,album.getRecordDate());
+        statement.setDouble(3, album.getFeeShare());
+        statement.setDouble(4, album.getManagerFeeShare());
+        statement.setLong(5, album.getManager().getId());
+        int albumCode = statement.executeUpdate();
+        boolean priceCode = true;
+        if (album.getCurrentPrice() != null) {
+           priceCode = Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
+        }
+        return albumCode == Constants.DB_SUCCESS_EXECUTION_CODE && priceCode;
     }
 
     @Override
     public boolean update(Album album) {
-        return false;
+        boolean exitCode = false;
+        try {
+            exitCode = Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
+        } catch (Exception e) {}
+        return exitCode;
     }
 
 //    @Override
@@ -50,6 +65,7 @@ public class AlbumRepository implements IAlbumRepository {
     //MARK: SQL queries
     private static final String allQ = "SELECT * FROM album;";
     private static final String getQ = "SELECT * FROM album WHERE id=?;";
+    private static final String insertQ = "INSERT INTO album (name, record_date, fee_share, manager_fee_share, manager_id) VALUES (?,?,?,?,?);";
 
     //MARK: mapping
     private Album albumFrom(ResultSet resultSet) throws SQLException {

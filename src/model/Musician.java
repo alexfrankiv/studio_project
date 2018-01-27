@@ -14,6 +14,8 @@ public class Musician {
         this.phone = phone;
     }
 
+    public Musician(){}
+
     @Override
     public String toString() {
         return "Musician{" +
