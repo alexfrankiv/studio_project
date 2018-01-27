@@ -3,6 +3,8 @@ package model;
 import app.Application;
 
 import java.sql.Date;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 public class Album {
 
@@ -29,16 +31,7 @@ public class Album {
 
     @Override
     public String toString() {
-        return "Album{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", recordDate=" + recordDate +
-                ", feeShare=" + feeShare +
-                ", managerFeeShare=" + managerFeeShare +
-                ", currentPrice=" + currentPrice +
-                ", rating=" + rating +
-                ", manager=" + manager +
-                '}';
+        return name + ' ' + new SimpleDateFormat("yyyy").format(recordDate);
     }
 
     public long getId() {
@@ -83,7 +76,9 @@ public class Album {
 
     public Double getCurrentPrice() {
         if (currentPrice == null) {
-            currentPrice = Application.self.albumPriceRepository.getLastPriceFor(this);
+            try {
+                currentPrice = Application.self.albumPriceRepository.getLastPriceFor(this);
+            } catch (SQLException e) {e.printStackTrace();}
         }
         return currentPrice;
     }

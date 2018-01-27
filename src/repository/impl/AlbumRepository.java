@@ -58,7 +58,7 @@ public class AlbumRepository implements IAlbumRepository {
     }
 
 //    @Override
-//    public boolean delete(Album album) {
+//    public boolean delete(Album MENU_ALBUM) {
 //        return false;
 //    }
 

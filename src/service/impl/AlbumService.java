@@ -54,7 +54,7 @@ public class AlbumService implements IAlbumService {
     }
 
 //    @Override
-//    public boolean delete(Album album) {
-//        return Application.self.albumRepository.delete(album);
+//    public boolean delete(Album MENU_ALBUM) {
+//        return Application.self.albumRepository.delete(MENU_ALBUM);
 //    }
 }

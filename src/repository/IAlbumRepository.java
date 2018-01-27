@@ -12,6 +12,6 @@ public interface IAlbumRepository {
     Album getBy(long id) throws SQLException;
     boolean insert(Album album) throws Exception;
     boolean update(Album album);
-//    boolean delete(Album album);
-    //boolean save(Album album);
+//    boolean delete(Album MENU_ALBUM);
+    //boolean save(Album MENU_ALBUM);
 }

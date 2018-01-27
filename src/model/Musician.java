@@ -18,12 +18,7 @@ public class Musician {
 
     @Override
     public String toString() {
-        return "Musician{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+        return name + ' ' + lastName;
     }
 
     public long getId() {

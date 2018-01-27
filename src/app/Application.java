@@ -10,20 +10,26 @@ import service.IAlbumService;
 import service.IMusicianService;
 import service.impl.AlbumService;
 import service.impl.MusicianService;
+import view_controller.AlbumViewController;
+import view_controller.MainController;
+import view_controller.NewAlbumViewController;
 
 public class Application {
 
     public final static Application self = new Application();
 
     // something like @Autowired
-    //repositories
-    public IMusicianRepository musicianRepository = new MusicianRepository();
-    public IAlbumPriceRepository albumPriceRepository = new AlbumPriceRepository();
-    public IAlbumRepository albumRepository = new AlbumRepository();
+    // MARK: repositories
+    public final IMusicianRepository musicianRepository = new MusicianRepository();
+    public final IAlbumPriceRepository albumPriceRepository = new AlbumPriceRepository();
+    public final IAlbumRepository albumRepository = new AlbumRepository();
 
-    //services
-    public IMusicianService musicianService = new MusicianService();
-    public IAlbumService albumService = new AlbumService();
+    // MARK: services
+    public final IMusicianService musicianService = new MusicianService();
+    public final IAlbumService albumService = new AlbumService();
 
-
+    // MARK: controllers
+    public final MainController mainController = new MainController();
+    public AlbumViewController albumViewController;
+    public NewAlbumViewController newAlbumViewController;
 }

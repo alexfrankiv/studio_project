@@ -7,13 +7,18 @@ import repository.IAlbumPriceRepository;
 
 import java.sql.*;
 import java.util.Calendar;
+import java.util.List;
 
 public class AlbumPriceRepository implements IAlbumPriceRepository {
 
-    //TODO: implement
     @Override
-    public Double getLastPriceFor(Album album) {
-        return null;
+    public Double getLastPriceFor(Album album) throws SQLException {
+        Connection c = DBConnector.shared.getConnect();
+        PreparedStatement ps = c.prepareStatement(getLastQ);
+        ps.setLong(1, album.getId());
+        ResultSet resultSet = ps.executeQuery();
+        resultSet.next();
+        return resultSet.getDouble("price");
     }
 
     // TODO: to be implemented soon
