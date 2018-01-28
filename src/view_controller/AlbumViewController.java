@@ -8,8 +8,6 @@ import model.Musician;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.ParseException;
 import java.util.List;
 
 public class AlbumViewController {
@@ -45,6 +43,11 @@ public class AlbumViewController {
         return contentView;
     }
 
+    public void refresh() {
+        reloadListData();
+        repaintDetails();
+    }
+
     // MARK: model job
     private void reloadListData() {
         reloadData();
@@ -76,6 +79,7 @@ public class AlbumViewController {
     // MARK: Listeners
     private void didSelectListItem(ListSelectionEvent e) {
         int index = albumList.getSelectedIndex();
+        if (index < 0) {return;}
         currentAlbum = dataSource.get(index);
         repaintDetails();
     }
@@ -86,14 +90,14 @@ public class AlbumViewController {
         try {
             newPrice = Double.parseDouble(newPriceStr);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, Strings.DIALOG_NUMBER_FORMAT_ERROR);
+            Application.showMessage(Strings.DIALOG_NUMBER_FORMAT_ERROR);
             return;
         }
         currentAlbum.setCurrentPrice(newPrice);
         try {
             Application.self.albumPriceRepository.save(newPrice, currentAlbum);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+            Application.showMessage(ex.getMessage());
         }
         repaintDetails();
     }

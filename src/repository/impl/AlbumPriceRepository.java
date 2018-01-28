@@ -17,8 +17,7 @@ public class AlbumPriceRepository implements IAlbumPriceRepository {
         PreparedStatement ps = c.prepareStatement(getLastQ);
         ps.setLong(1, album.getId());
         ResultSet resultSet = ps.executeQuery();
-        resultSet.next();
-        return resultSet.getDouble("price");
+        return (resultSet.next()) ? resultSet.getDouble("price") : null;
     }
 
     // TODO: to be implemented soon

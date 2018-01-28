@@ -1,7 +1,7 @@
 package service.impl;
 
 import app.Application;
-import app.Messages;
+import app.Strings;
 import model.Album;
 import service.IAlbumService;
 
@@ -38,7 +38,7 @@ public class AlbumService implements IAlbumService {
         try{
            exitCode = Application.self.albumRepository.insert(album);
         } catch (Exception e) {
-            throw new IllegalStateException(Messages.ILLEGAL_DATE_ERROR);
+            throw new IllegalStateException(Strings.DIALOG_ILLEGAL_PRICE_CHANGE_ERROR);
         }
         return exitCode;
     }
@@ -48,7 +48,7 @@ public class AlbumService implements IAlbumService {
         try {
             Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
         } catch (Exception e) {
-            throw new IllegalStateException(Messages.ILLEGAL_DATE_ERROR);
+            throw new IllegalStateException(Strings.DIALOG_ILLEGAL_PRICE_CHANGE_ERROR);
         }
         return Application.self.albumRepository.update(album);
     }

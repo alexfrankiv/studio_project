@@ -1,6 +1,8 @@
 package view_controller;
 
 import app.Application;
+import app.Strings;
+import model.Album;
 import model.Musician;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -8,9 +10,12 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.Date;
+import java.util.List;
 import java.util.Properties;
 
 public class NewAlbumViewController extends JDialog {
+
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -20,6 +25,8 @@ public class NewAlbumViewController extends JDialog {
     private JTextField managerFeeShareInput;
     private JComboBox<Musician> managerBox;
     private JDatePickerImpl datePicker;
+
+    private List<Musician> musicians;
 
     public NewAlbumViewController() {
         setContentPane(contentPane);
@@ -52,20 +59,44 @@ public class NewAlbumViewController extends JDialog {
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         this.datePanel.add(datePicker);
 
+        musicians = Application.self.musicianService.all();
         DefaultComboBoxModel<Musician> dlm = new DefaultComboBoxModel<>();
-        for (Musician m : Application.self.musicianService.all()) {
+        for (Musician m : musicians) {
             dlm.addElement(m);
         }
         managerBox.setModel(dlm);
     }
 
     private void onOK() {
-        // TODO: check & insert
+        // TODO: check
+        Album newAlbum = new Album();
+        newAlbum.setName(nameInput.getText());
+        if (newAlbum.getName() == null) {
+            Application.showMessage(Strings.DIALOG_EMPTY_NAME_ERROR);
+            return;
+        }
+        if ( datePicker.getModel().getValue() == null ) {
+            Application.showMessage(Strings.DIALOG_EMPTY_DATE_ERROR);
+            return;
+        } else {
+            newAlbum.setRecordDate(new Date(((java.util.Date) datePicker.getModel().getValue()).getTime()));
+        }
+        try {
+            newAlbum.setFeeShare(Double.parseDouble(feeShareInput.getText()));
+            newAlbum.setManagerFeeShare(Double.parseDouble(managerFeeShareInput.getText()));
+        } catch (NumberFormatException ex) {
+            Application.showMessage(Strings.DIALOG_NUMBER_FORMAT_ERROR);
+            return;
+        }
+        newAlbum.setManager(musicians.get(managerBox.getSelectedIndex()));
+        try {
+            Application.self.albumService.insert(newAlbum);
+        } catch (IllegalStateException ex) {/*intentionally nothing*/}
         dispose();
+        Application.self.albumViewController.refresh();
     }
 
     private void onCancel() {
-        // add your code here if necessary
         dispose();
     }
 

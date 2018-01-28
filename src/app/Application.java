@@ -14,6 +14,8 @@ import view_controller.AlbumViewController;
 import view_controller.MainController;
 import view_controller.NewAlbumViewController;
 
+import javax.swing.*;
+
 public class Application {
 
     public final static Application self = new Application();
@@ -32,4 +34,9 @@ public class Application {
     public final MainController mainController = new MainController();
     public AlbumViewController albumViewController;
     public NewAlbumViewController newAlbumViewController;
+
+    // MARK: general behaviour
+    public static void showMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
+    }
 }
