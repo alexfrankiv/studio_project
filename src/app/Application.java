@@ -1,18 +1,14 @@
 package app;
 
-import repository.IAlbumPriceRepository;
-import repository.IAlbumRepository;
-import repository.IMusicianRepository;
-import repository.impl.AlbumPriceRepository;
-import repository.impl.AlbumRepository;
-import repository.impl.MusicianRepository;
+import repository.*;
+import repository.impl.*;
 import service.IAlbumService;
 import service.IMusicianService;
 import service.impl.AlbumService;
 import service.impl.MusicianService;
+import view_controller.AlbumDetailsController;
 import view_controller.AlbumViewController;
 import view_controller.MainController;
-import view_controller.NewAlbumViewController;
 
 import javax.swing.*;
 
@@ -25,6 +21,8 @@ public class Application {
     public final IMusicianRepository musicianRepository = new MusicianRepository();
     public final IAlbumPriceRepository albumPriceRepository = new AlbumPriceRepository();
     public final IAlbumRepository albumRepository = new AlbumRepository();
+    public final ISaleRepository saleRepository = new SaleRepository();
+    public final IFlowRepository flowRepository = new FlowRepository();
 
     // MARK: services
     public final IMusicianService musicianService = new MusicianService();
@@ -33,7 +31,7 @@ public class Application {
     // MARK: controllers
     public final MainController mainController = new MainController();
     public AlbumViewController albumViewController;
-    public NewAlbumViewController newAlbumViewController;
+    public AlbumDetailsController newAlbumViewController;
 
     // MARK: general behaviour
     public static void showMessage(String message) {

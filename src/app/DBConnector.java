@@ -1,12 +1,14 @@
 package app;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBConnector {
 
     public static DBConnector shared = new DBConnector();
 
-    private static final String CONN_URL = "jdbc:mysql://localhost/studio?"+"user=root&password=root";
+    private static final String CONN_URL = "jdbc:mysql://localhost/studio?user=root&password=root";
 
     private Connection connection = null;
 

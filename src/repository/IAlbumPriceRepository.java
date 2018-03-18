@@ -2,12 +2,13 @@ package repository;
 
 import model.Album;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.SQLException;
 
 public interface IAlbumPriceRepository {
 
-    Double getLastPriceFor(Album album) throws SQLException;
-    Double getPriceFor(Album album, Date date);
-    boolean save(Double price, Album album) throws Exception;
+    BigDecimal getLastPriceFor(Album album) throws SQLException;
+    BigDecimal getPriceFor(Album album, Date date);
+    boolean save(BigDecimal price, Album album) throws Exception;
 }

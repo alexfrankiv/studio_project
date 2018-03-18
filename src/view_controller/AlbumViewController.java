@@ -1,6 +1,7 @@
 package view_controller;
 
 import app.Application;
+import app.Constants;
 import app.Strings;
 import model.Album;
 import model.Musician;
@@ -8,6 +9,7 @@ import model.Musician;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class AlbumViewController {
@@ -43,6 +45,13 @@ public class AlbumViewController {
         return contentView;
     }
 
+    public long getCurrentId() {
+        int index = albumList.getSelectedIndex();
+        if (index < 0) {return -1;}
+        currentAlbum = dataSource.get(index);
+        return currentAlbum.getId();
+    }
+
     public void refresh() {
         reloadListData();
         repaintDetails();
@@ -63,17 +72,18 @@ public class AlbumViewController {
     }
 
     private void repaintDetails() {
+        if (currentAlbum == null) {return;}
         albumNameLabel.setText(currentAlbum.getName());
         recordDateLabel.setText(currentAlbum.getRecordDate().toString());
         albumFeeShareLabel.setText(String.valueOf(currentAlbum.getFeeShare()));
-//        TODO: albumRateLabel;
+        albumRateLabel.setText(String.valueOf(currentAlbum.getRating() * Constants.RATING_MAX_VALUE));
         albumPriceLabel.setText(String.valueOf(currentAlbum.getCurrentPrice()));
 
         Musician manager = currentAlbum.getManager();
         managerNameLabel.setText(manager.getName() + ' ' + manager.getLastName());
         managerPhoneLabel.setText(manager.getPhone());
         managerFeeShareLabel.setText(String.valueOf(currentAlbum.getManagerFeeShare()));
-//        TODO:  managerRateLabel
+        managerRateLabel.setText(String.valueOf(currentAlbum.getManager().getRating() * Constants.RATING_MAX_VALUE));
     }
 
     // MARK: Listeners
@@ -86,13 +96,13 @@ public class AlbumViewController {
 
     private void willEditPrice(ActionEvent e) {
         String newPriceStr = JOptionPane.showInputDialog(null, Strings.DIALOG_NEW_PRICE);
-        Double newPrice = null;
+        BigDecimal newPrice = null;
         try {
-            newPrice = Double.parseDouble(newPriceStr);
+            newPrice = BigDecimal.valueOf(Double.parseDouble(newPriceStr));
         } catch (NumberFormatException ex) {
             Application.showMessage(Strings.DIALOG_NUMBER_FORMAT_ERROR);
             return;
-        }
+        } catch (NullPointerException ex) {return;}
         currentAlbum.setCurrentPrice(newPrice);
         try {
             Application.self.albumPriceRepository.save(newPrice, currentAlbum);

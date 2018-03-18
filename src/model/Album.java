@@ -2,6 +2,7 @@ package model;
 
 import app.Application;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -14,7 +15,7 @@ public class Album {
     private double feeShare;
     private double managerFeeShare;
 
-    private Double currentPrice;
+    private BigDecimal currentPrice;
     private Double rating;
 
     private Musician manager;
@@ -74,7 +75,7 @@ public class Album {
         this.managerFeeShare = managerFeeShare;
     }
 
-    public Double getCurrentPrice() {
+    public BigDecimal getCurrentPrice() {
         if (currentPrice == null) {
             try {
                 currentPrice = Application.self.albumPriceRepository.getLastPriceFor(this);
@@ -83,14 +84,11 @@ public class Album {
         return currentPrice;
     }
 
-    public void setCurrentPrice(Double currentPrice) {
+    public void setCurrentPrice(BigDecimal currentPrice) {
         this.currentPrice = currentPrice;
     }
 
     public Double getRating() {
-        if (rating == null) {
-            // TODO: retrieve from DB
-        }
         return rating;
     }
 

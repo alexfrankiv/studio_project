@@ -44,13 +44,14 @@ public class AlbumService implements IAlbumService {
     }
 
     @Override
-    public boolean update(Album album) {
+    public boolean update(Album album) throws SQLException {
+        boolean success = Application.self.albumRepository.update(album);
         try {
             Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
         } catch (Exception e) {
             throw new IllegalStateException(Strings.DIALOG_ILLEGAL_PRICE_CHANGE_ERROR);
         }
-        return Application.self.albumRepository.update(album);
+        return success;
     }
 
 //    @Override

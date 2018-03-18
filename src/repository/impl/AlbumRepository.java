@@ -6,9 +6,11 @@ import app.DBConnector;
 import model.Album;
 import repository.IAlbumRepository;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class AlbumRepository implements IAlbumRepository {
@@ -27,6 +29,8 @@ public class AlbumRepository implements IAlbumRepository {
         Connection c = DBConnector.shared.getConnect();
         PreparedStatement ps = c.prepareStatement(getQ);
         ps.setLong(1, id);
+        ps.setLong(2, id);
+        ps.setLong(3, id);
         List<Album> result = listAlbumsFrom(ps.executeQuery());
         return (result.isEmpty()) ? null : result.get(0);
     }
@@ -49,12 +53,24 @@ public class AlbumRepository implements IAlbumRepository {
     }
 
     @Override
-    public boolean update(Album album) {
-        boolean exitCode = false;
-        try {
-            exitCode = Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
-        } catch (Exception e) {}
-        return exitCode;
+    public boolean update(Album album) throws SQLException {
+        Connection c = DBConnector.shared.getConnect();
+        PreparedStatement statement = c.prepareStatement(updateQ);
+        statement.setString(1, album.getName());
+        statement.setDate(2,album.getRecordDate());
+        statement.setDouble(3, album.getFeeShare());
+        statement.setDouble(4, album.getManagerFeeShare());
+        statement.setLong(5, album.getManager().getId());
+        statement.setLong(6, album.getId());
+        int albumCode = statement.executeUpdate();
+        boolean priceCode = true;
+        if (album.getCurrentPrice() != Application.self.albumPriceRepository.getLastPriceFor(album)) {
+            try {
+                priceCode = Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
+            } catch (Exception e) {
+            }
+        }
+        return priceCode && albumCode == Constants.DB_SUCCESS_EXECUTION_CODE;
     }
 
 //    @Override
@@ -63,9 +79,10 @@ public class AlbumRepository implements IAlbumRepository {
 //    }
 
     //MARK: SQL queries
-    private static final String allQ = "SELECT * FROM album;";
-    private static final String getQ = "SELECT * FROM album WHERE id=?;";
+    private static final String allQ = "SELECT * FROM album as gen inner join (SELECT id, (SELECT (SELECT COUNT(*) FROM sale WHERE album_id = album.id) / (SELECT COUNT(*) FROM sale)) AS rate FROM album) as rat on gen.id=rat.id ORDER BY record_date DESC;";
+    private static final String getQ = "SELECT * from album inner join (SELECT ? as album_id, ((SELECT COUNT(*) FROM sale WHERE album_id = ?) / (SELECT COUNT(*) FROM sale)) AS rate) as rat ON album.id = rat.album_id WHERE id=?;";
     private static final String insertQ = "INSERT INTO album (name, record_date, fee_share, manager_fee_share, manager_id) VALUES (?,?,?,?,?);";
+    private static final String updateQ = "UPDATE album SET name=?, record_date=?, fee_share=?, manager_fee_share=?, manager_id=? WHERE id = ?;";
 
     //MARK: mapping
     private Album albumFrom(ResultSet resultSet) throws SQLException {
@@ -75,6 +92,9 @@ public class AlbumRepository implements IAlbumRepository {
         album.setRecordDate(resultSet.getDate("record_date"));
         album.setFeeShare(resultSet.getDouble("fee_share"));
         album.setManagerFeeShare(resultSet.getDouble("manager_fee_share"));
+        try {
+            album.setRating(resultSet.getDouble("rate"));
+        } catch (Exception e) {/*intentionally nothing*/}
         return album;
     }
 

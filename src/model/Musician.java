@@ -6,15 +6,18 @@ public class Musician {
     private String name;
     private String lastName;
     private String phone;
+    private Double rating;
 
-    public Musician(long id, String name, String lastName, String phone) {
+    public Musician(long id, String name, String lastName, String phone, Double rate) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.phone = phone;
+        this.rating = rate;
     }
 
-    public Musician(){}
+    public Musician() {
+    }
 
     @Override
     public String toString() {
@@ -52,4 +55,26 @@ public class Musician {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Musician musician = (Musician) o;
+        return id == musician.id;
+    }
+
+    //utilities
+    public String getFullName() {
+        return name + lastName;
+    }
+
 }

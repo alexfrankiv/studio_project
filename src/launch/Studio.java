@@ -1,13 +1,8 @@
 package launch;
 
 import app.Application;
-import model.Album;
-import view_controller.MainController;
 
-import javax.swing.*;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Calendar;
 
 public class Studio {
 

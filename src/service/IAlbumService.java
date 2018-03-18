@@ -10,7 +10,7 @@ public interface IAlbumService {
     List<Album> all();
     Album getBy(long id);
     boolean insert(Album album);
-    boolean update(Album album);
+    boolean update(Album album) throws SQLException;
 //    boolean delete(Album MENU_ALBUM);
     //boolean save(Album MENU_ALBUM);
 }
