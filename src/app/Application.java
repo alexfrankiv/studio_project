@@ -33,6 +33,7 @@ public class Application {
     // MARK: controllers
     public final MainController mainController = new MainController();
     public AlbumViewController albumViewController;
+    public AlbumViewController salesViewController;
     public AlbumDetailsController newAlbumViewController;
 
     // MARK: general behaviour

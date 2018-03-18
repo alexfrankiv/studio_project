@@ -68,8 +68,7 @@ public class MainController {
             if (currentWindow != null) {
                 frame.remove(currentWindow);
             }
-            //TODO: add sales view
-//            currentWindow = Application.self.albumViewController.getContentView();
+            currentWindow = Application.self.salesViewController.getContentView();
             frame.add(currentWindow);
             update();
         });
