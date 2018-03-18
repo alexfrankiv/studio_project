@@ -6,6 +6,7 @@ import service.IAlbumService;
 import service.IMusicianService;
 import service.impl.AlbumService;
 import service.impl.MusicianService;
+import service.impl.SaleService;
 import view_controller.AlbumDetailsController;
 import view_controller.AlbumViewController;
 import view_controller.MainController;
@@ -27,6 +28,7 @@ public class Application {
     // MARK: services
     public final IMusicianService musicianService = new MusicianService();
     public final IAlbumService albumService = new AlbumService();
+    public final SaleService saleService = new SaleService(); // !!! make an interface !!!
 
     // MARK: controllers
     public final MainController mainController = new MainController();

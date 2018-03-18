@@ -11,6 +11,7 @@ public interface IMusicianRepository {
     List<Musician> all() throws SQLException;
     Musician getBy(long id) throws SQLException;
     Musician getBy(Album album) throws SQLException;
+    Musician getBy(String name, String lastName) throws SQLException;
     boolean insert(Musician musician);
     boolean update(Musician musician);
 }

@@ -40,6 +40,17 @@ public class MusicianRepository implements IMusicianRepository {
         List<Musician> result = listMusiciansFrom(ps.executeQuery());
         return (result.isEmpty()) ? null : result.get(0);
     }
+    
+
+    @Override
+    public Musician getBy(String name, String lastName) throws SQLException {
+    	Connection c = DBConnector.shared.getConnect();
+        PreparedStatement ps = c.prepareStatement(getByNameQ);
+        ps.setString(1, name);
+        ps.setString(1, lastName);
+        List<Musician> result = listMusiciansFrom(ps.executeQuery());
+        return (result.isEmpty()) ? null : result.get(0);
+    }
 
     // TODO: to be implemented soon
     @Override
@@ -57,6 +68,7 @@ public class MusicianRepository implements IMusicianRepository {
     private static final String allQ = "SELECT * FROM musician as gen inner join (SELECT id, (SELECT (SELECT COUNT(*) FROM sale LEFT JOIN album ON sale.album_id = album.id WHERE manager_id=musician.id) / (SELECT COUNT(*) FROM sale)) AS rate FROM musician) as rat on gen.id=rat.id;";
     private static final String getQ = "SELECT * FROM musician as gen inner join (SELECT id, (SELECT (SELECT COUNT(*) FROM sale LEFT JOIN album ON sale.album_id = album.id WHERE manager_id=musician.id) / (SELECT COUNT(*) FROM sale)) AS rate FROM musician) as rat on gen.id=rat.id WHERE gen.id=?;";
     private static final String getByAlbumQ = "SELECT * FROM musician as gen inner join (SELECT id, (SELECT (SELECT COUNT(*) FROM sale LEFT JOIN album ON sale.album_id = album.id WHERE manager_id=musician.id) / (SELECT COUNT(*) FROM sale)) AS rate FROM musician) as rat on gen.id=rat.id WHERE gen.id IN (SELECT manager_id FROM album WHERE id=?);";
+    private static final String getByNameQ = "SELECT * FROM musician as gen inner join (SELECT id, (SELECT (SELECT COUNT(*) FROM sale LEFT JOIN album ON sale.album_id = album.id WHERE manager_id=musician.id) / (SELECT COUNT(*) FROM sale)) AS rate FROM musician) as rat on gen.id=rat.id WHERE gen.name=? and gen.last_name=?;";
 
     // MARK: mapping
     private Musician musicianFrom(ResultSet resultSet) throws SQLException {

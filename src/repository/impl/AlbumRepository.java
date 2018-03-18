@@ -34,7 +34,16 @@ public class AlbumRepository implements IAlbumRepository {
         List<Album> result = listAlbumsFrom(ps.executeQuery());
         return (result.isEmpty()) ? null : result.get(0);
     }
-
+    
+    @Override
+	public Album getBy(String name) throws SQLException {
+    	Connection c = DBConnector.shared.getConnect();
+        PreparedStatement ps = c.prepareStatement(getByNameQ);
+        ps.setString(1, name);
+        List<Album> result = listAlbumsFrom(ps.executeQuery());
+        return (result.isEmpty()) ? null : result.get(0);
+	}
+    
     @Override
     public boolean insert(Album album) throws Exception {
         Connection c = DBConnector.shared.getConnect();
@@ -81,6 +90,7 @@ public class AlbumRepository implements IAlbumRepository {
     //MARK: SQL queries
     private static final String allQ = "SELECT * FROM album as gen inner join (SELECT id, (SELECT (SELECT COUNT(*) FROM sale WHERE album_id = album.id) / (SELECT COUNT(*) FROM sale)) AS rate FROM album) as rat on gen.id=rat.id ORDER BY record_date DESC;";
     private static final String getQ = "SELECT * from album inner join (SELECT ? as album_id, ((SELECT COUNT(*) FROM sale WHERE album_id = ?) / (SELECT COUNT(*) FROM sale)) AS rate) as rat ON album.id = rat.album_id WHERE id=?;";
+    private static final String getByNameQ = "SELECT * FROM album_full WHERE name=?;";
     private static final String insertQ = "INSERT INTO album (name, record_date, fee_share, manager_fee_share, manager_id) VALUES (?,?,?,?,?);";
     private static final String updateQ = "UPDATE album SET name=?, record_date=?, fee_share=?, manager_fee_share=?, manager_id=? WHERE id = ?;";
 

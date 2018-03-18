@@ -17,7 +17,7 @@ public class AlbumViewController {
     private List<Album> dataSource;
     private Album currentAlbum;
 
-    private JList<Album> albumList;
+    private JList<Album> albumList = new JList<>();
     private JPanel contentView;
 
     private JLabel albumNameLabel;

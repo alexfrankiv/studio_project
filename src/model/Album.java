@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Album {
 
@@ -57,6 +58,12 @@ public class Album {
 
     public void setRecordDate(Date recordDate) {
         this.recordDate = recordDate;
+    }
+    
+    public int getRecordYear( ) {
+    	Calendar c = Calendar.getInstance();
+    	c.setTime(recordDate);
+    	return c.get(Calendar.YEAR);
     }
 
     public double getFeeShare() {
