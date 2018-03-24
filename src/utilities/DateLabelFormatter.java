@@ -1,4 +1,4 @@
-package view_controller;
+package utilities;
 
 import javax.swing.*;
 import java.text.ParseException;

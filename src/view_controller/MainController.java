@@ -24,6 +24,8 @@ public class MainController {
         setMenuBar();
 
         Application.self.albumViewController = new AlbumViewController();
+        Application.self.songViewController = new SongViewController();
+        Application.self.salesViewController = new SalesViewController();
 //        frame.add(Application.self.albumViewController.getContentView());
 //
         update();
@@ -32,6 +34,7 @@ public class MainController {
     private void update() {
         frame.pack();
         frame.setVisible(true);
+        frame.repaint();
     }
 
     private void setMenuBar() {
@@ -59,6 +62,35 @@ public class MainController {
         albumMenu.add(albumEditCurrent);
 
         menuBar.add(albumMenu);
+
+        //song menu
+        JMenu songMenu = new JMenu(Strings.MENU_SONG);
+
+        JMenuItem viewSongs = new JMenuItem(Strings.MENU_SONG_VIEW);
+        viewSongs.addActionListener(e -> {
+            if (currentWindow != null) {
+                frame.remove(currentWindow);
+            }
+            currentWindow = Application.self.songViewController.getContentView();
+            frame.add(currentWindow);
+            update();
+        });
+        songMenu.add(viewSongs);
+
+        JMenuItem songNewItem = new JMenuItem(Strings.MENU_SONG_NEW);
+        songNewItem.addActionListener(e -> SongDetailsController.presentDialog(true));
+        songMenu.add(songNewItem);
+
+        JMenuItem songEditCurrent = new JMenuItem(Strings.MENU_SONG_EDIT);
+        songEditCurrent.addActionListener(e -> SongDetailsController.presentDialog(false,
+                Application.self.songViewController.getCurrentId()));
+        songMenu.add(songEditCurrent);
+
+        JMenuItem songMusicianShareMenu = new JMenuItem(Strings.MENU_MUSICIAN_SHARE);
+        songMusicianShareMenu.addActionListener(e -> SongMusicianController.presentDialog(Application.self.songViewController.getCurrentId()));
+        songMenu.add(songMusicianShareMenu);
+
+        menuBar.add(songMenu);
 
         //sales menu
         JMenu salesMenu = new JMenu(Strings.MENU_SALES);

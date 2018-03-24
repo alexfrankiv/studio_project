@@ -12,8 +12,13 @@ public class MainTableModel extends AbstractTableModel {
 	
 	private ArrayList data;
 	
-	MainTableModel() throws SQLException {
-		ArrayList arr = (ArrayList) Application.self.saleService.getData();
+	MainTableModel() {
+		ArrayList arr = null;
+		try {
+			arr = (ArrayList) Application.self.saleService.getData();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		arr.trimToSize();
 		data = arr;
 	}
@@ -50,7 +55,7 @@ public class MainTableModel extends AbstractTableModel {
 	}
 	
 	public String getColumnName(int col) {
-		String[] names = { "Дата", "Альбом", "Виконавець", "Операція", "К-ть / Місяць", "Покупець", "Сума" };
+		String[] names = { "пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅ-пїЅпїЅ / МіпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅ" };
 		return (String) names[col]; 
 	}
 	

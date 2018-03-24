@@ -22,7 +22,7 @@ import app.Application;
 public class SalesViewController {
 	
 	private JPanel contentView;
-	private final JButton selectButton = new JButton("Обрати");
+	private final JButton selectButton = new JButton("пїЅпїЅпїЅпїЅпїЅпїЅ");
 	private JTable table;
 	private JLabel albumId;
 	private JComboBox albumBox;
@@ -31,13 +31,13 @@ public class SalesViewController {
 	//private SelectorDialog dialog;
 	private JPanel newPanel;
 	
-	public SalesViewController() throws SQLException {
+	public SalesViewController() {
 		contentView = new JPanel();
 		contentView.setBorder(new EmptyBorder(5, 5, 5, 5));
 		initialize();
 	}
 	
-	private void initialize( ) throws SQLException {
+	private void initialize() {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 103, 103, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{23, 0, 0, 0, 0, 0, 0};
@@ -53,7 +53,7 @@ public class SalesViewController {
 		albumId.setVisible(false);
 		contentView.add(albumId, gbc_albumId);
 		
-		JLabel albumLabel = new JLabel("Альбом :");
+		JLabel albumLabel = new JLabel("пїЅпїЅпїЅпїЅпїЅпїЅ :");
 		albumLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_albumLabel = new GridBagConstraints();
 		gbc_albumLabel.insets = new Insets(0, 0, 5, 5);
@@ -70,9 +70,13 @@ public class SalesViewController {
 		gbc_albumBox.gridy = 1;
 		
 		albumBox.addItem("-");
-		for(String i : Application.self.albumService.getNames())
-	        albumBox.addItem(i);
-		
+		try {
+			for(String i : Application.self.albumService.getNames())
+                albumBox.addItem(i);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		albumBox.addActionListener (new ActionListener () {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -102,7 +106,7 @@ public class SalesViewController {
 		});
 		contentView.add(selectButton, gbc_selectButton);
 		
-		JLabel operationLabel = new JLabel("Операція :");
+		JLabel operationLabel = new JLabel("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ :");
 		operationLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_operationLabel = new GridBagConstraints();
 		gbc_operationLabel.anchor = GridBagConstraints.EAST;
@@ -112,7 +116,7 @@ public class SalesViewController {
 		contentView.add(operationLabel, gbc_operationLabel);
 		
 		operationBox = new JComboBox();
-		operationBox.setModel(new DefaultComboBoxModel(new String[] {"-", "покупка записів", "щомісячна плата"}));
+		operationBox.setModel(new DefaultComboBoxModel(new String[] {"-", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ"}));
 		GridBagConstraints gbc_operationBox = new GridBagConstraints();
 		gbc_operationBox.insets = new Insets(0, 0, 5, 5);
 		gbc_operationBox.fill = GridBagConstraints.HORIZONTAL;

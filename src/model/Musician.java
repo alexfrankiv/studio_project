@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Comparator;
+
 public class Musician {
 
     private long id;
@@ -76,5 +78,15 @@ public class Musician {
     public String getFullName() {
         return name + lastName;
     }
+
+    public static Comparator<Musician> musComparator = new Comparator<Musician>() {
+
+        public int compare(Musician s1, Musician s2) {
+            long firstId = s1.getId();
+            long secondId = s2.getId();
+            return (int)(firstId-secondId);
+
+        }
+    };
 
 }

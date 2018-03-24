@@ -4,12 +4,10 @@ import repository.*;
 import repository.impl.*;
 import service.IAlbumService;
 import service.IMusicianService;
-import service.impl.AlbumService;
-import service.impl.MusicianService;
-import service.impl.SaleService;
-import view_controller.AlbumDetailsController;
-import view_controller.AlbumViewController;
-import view_controller.MainController;
+import service.IMusicianSongService;
+import service.ISongService;
+import service.impl.*;
+import view_controller.*;
 
 import javax.swing.*;
 
@@ -24,17 +22,23 @@ public class Application {
     public final IAlbumRepository albumRepository = new AlbumRepository();
     public final ISaleRepository saleRepository = new SaleRepository();
     public final IFlowRepository flowRepository = new FlowRepository();
+    public final ISongRepository songRepository = new SongRepository();
+    public final IMusicianSongRepository musicianSongRepository = new MusicianSongRepository();
 
     // MARK: services
     public final IMusicianService musicianService = new MusicianService();
     public final IAlbumService albumService = new AlbumService();
     public final SaleService saleService = new SaleService(); // !!! make an interface !!!
+    public final ISongService songService = new SongService();
+    public final IMusicianSongService musicianSongService = new MusicianSongService();
 
     // MARK: controllers
     public final MainController mainController = new MainController();
     public AlbumViewController albumViewController;
-    public AlbumViewController salesViewController;
+    public SalesViewController salesViewController;
     public AlbumDetailsController newAlbumViewController;
+    public SongMusicianController songMusicianController;
+    public SongViewController songViewController;
 
     // MARK: general behaviour
     public static void showMessage(String message) {
