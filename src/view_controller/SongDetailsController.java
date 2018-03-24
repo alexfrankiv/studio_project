@@ -121,15 +121,17 @@ public class SongDetailsController  extends JDialog{
 
     private void onOK() {
         Song song = (createNew) ? new Song() : currentSong;
-        song.setName(nameInput.getText());
-        if (song.getName() == null) {
+        if (nameInput.getText().isEmpty()|| nameInput.getText()==null){
             Application.showMessage(Strings.DIALOG_EMPTY_NAME_ERROR);
             return;
         }
-        song.setAuthor(authorInput.getText());
-        if(song.getAuthor() == null){
+        if(authorInput.getText().isEmpty() || authorInput.getText() == null){
             Application.showMessage(Strings.DIALOG_EMPTY_AUTHOR_ERROR);
-            return;}
+            return ;
+
+        }
+        song.setName(nameInput.getText());
+
 
         song.setAlbum_id(albumBox.getSelectedIndex()+1 );
         if(song.getAlbum_id()<0) {
@@ -141,9 +143,12 @@ public class SongDetailsController  extends JDialog{
         try {
             if (createNew) {
                 Application.self.songService.insert(song);
+                Application.showMessage(Strings.INSERTED_SONG);
 
             } else {
                 Application.self.songService.update(song);
+                Application.showMessage(Strings.CHANGED_SONG);
+
             }
         }catch(Exception e){
             e.printStackTrace();

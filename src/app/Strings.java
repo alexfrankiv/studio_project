@@ -42,4 +42,7 @@ public class Strings {
     public static final String DIALOG_CHOOSE_SONG ="Please choose a song";
     public  static  final String MENU_MUSICIAN_SHARE = "Musicians share";
     public static final String SHARE_CHANGED = "Share changed";
+    public static final  String INPUT_WRONG_SHARE = "Wrong format of share.Share must be in range from 0 to 1";
+    public  static  final  String CHANGED_SONG= "Song is edited";
+    public static final  String INSERTED_SONG = "Song is added";
 }

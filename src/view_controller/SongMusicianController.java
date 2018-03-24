@@ -63,62 +63,78 @@ public class SongMusicianController extends JFrame {
         changeShare.addActionListener(e -> changeShare(e));
     }
 
-    private void changeShare(ActionEvent e){
+    private void changeShare(ActionEvent e) {
         long mid = currentMusician.getId();
         long sid = this.song_id;
+        double prev_share = currentMusician.getRating();
         double share = 0;
         boolean updated = false;
+        boolean changed = false;
         JTextField feeShare = new JTextField();
-        feeShare.setText(String.valueOf(currentMusician.getRating()));
-        Object [] message = {
-                " New share",feeShare
+        feeShare.setText(String.valueOf(prev_share));
+        Object[] message = {
+                " New share", feeShare
         };
-        int option = JOptionPane.showConfirmDialog(null,message,  Strings.MENU_SONG_CHANGE_SHARE, JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, message, Strings.MENU_SONG_CHANGE_SHARE, JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            try{
-                share = Double.parseDouble(feeShare.getText());
-
-            }catch(NumberFormatException ex){
-                Application.showMessage(Strings.DIALOG_NUMBER_FORMAT_ERROR);
-            }
-            MusicianSong ms = new MusicianSong(mid,sid,share);
             try {
-                updated = Application.self.musicianSongRepository.update(ms);
-                if(updated){
-                    Application.showMessage(Strings.SHARE_CHANGED);
+                share = Double.parseDouble(feeShare.getText());
+                if (share < 0 || share > 1) {
+                    prev_share = share;
+                    changed = false;
+                    Application.showMessage(Strings.INPUT_WRONG_SHARE);
                     reloadListData();
                     repaintDetails();
-
+                } else {
+                    changed = true;
                 }
-            }catch(SQLException ex){
-                ex.printStackTrace();
+
+
+            } catch (NumberFormatException ex) {
+                Application.showMessage(Strings.DIALOG_NUMBER_FORMAT_ERROR);
+            }
+            MusicianSong ms = new MusicianSong(mid, sid, share);
+            if (changed) {
+                try {
+                    updated = Application.self.musicianSongRepository.update(ms);
+                    if (updated) {
+                        Application.showMessage(Strings.SHARE_CHANGED);
+                        reloadListData();
+                        repaintDetails();
+
+                    } else {
+
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
             }
 
         }
-
     }
 
     private void  reloadData(){
         try {
-            System.out.println("2");
+           // System.out.println("2");
 
 
             dataSource = Application.self.songRepository.getSongMusicians(this.song_id);
-            System.out.println("3");
+           // System.out.println("3");
         }
         catch(SQLException e){
-            System.out.println("4");
+           // System.out.println("4");
             e.printStackTrace();
         }
     }
     private void reloadListData() {
-        System.out.println("1");
+       // System.out.println("1");
         reloadData();
 
         DefaultListModel<Musician> dlm = new DefaultListModel<>();
         for (Musician s : dataSource) {
             dlm.addElement(s);
-            System.out.println("added musicians" + s.toString());
+            //System.out.println("added musicians" + s.toString());
         }
         musicianList.setModel(dlm);
 

@@ -78,7 +78,7 @@ public class SongViewController {
         DefaultListModel<Song> dlm = new DefaultListModel<>();
         for (Song s : dataSource) {
             dlm.addElement(s);
-            System.out.println("added song" + s.toString());
+           // System.out.println("added song" + s.toString());
         }
         songList.setModel(dlm);
 

@@ -24,13 +24,13 @@ public class SongRepository implements ISongRepository {
     @Override
     public List<Song> all() throws SQLException {
         Connection c = DBConnector.shared.getConnect();
-        System.out.println("Connected");
+        //System.out.println("Connected");
 
 
         PreparedStatement ps = c.prepareStatement(getAll);
         ResultSet result = ps.executeQuery();
 
-        System.out.println("Executed query");
+        //System.out.println("Executed query");
         return listSongsFrom(result);
     }
 
@@ -123,7 +123,7 @@ private static final String getById = "SELECT * FROM song WHERE id=?;";
         song.setAuthor(resultSet.getString("author"));
         song.setName(resultSet.getString("name"));
         song.setAlbum_id(resultSet.getLong("album_id"));
-        System.out.println("Create song");
+        //System.out.println("Create song");
 
 
         return song;
