@@ -28,8 +28,8 @@ public class AlbumDetailsController extends JDialog {
     private JButton buttonCancel;
     private JTextField nameInput;
     private JPanel datePanel;
-    private JTextField feeShareInput;
-    private JTextField managerFeeShareInput;
+    private JSpinner feeShareInput;
+    private JSpinner managerFeeShareInput;
     private JComboBox<Musician> managerBox;
     private JLabel windowLabel;
     private JDatePickerImpl datePicker;
@@ -52,6 +52,7 @@ public class AlbumDetailsController extends JDialog {
         setup();
     }
 
+    @SuppressWarnings("Duplicates")
     private void setup(){
         setContentPane(contentPane);
         setModal(true);
@@ -95,14 +96,16 @@ public class AlbumDetailsController extends JDialog {
         if (!this.createNew) {
             nameInput.setText(currentAblum.getName());
             Date recordDate = currentAblum.getRecordDate();
+            // FIXME
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(recordDate);
+            datePicker.getModel().setSelected(true);
             datePicker.getModel().setDay(calendar.get(Calendar.DAY_OF_MONTH));
             datePicker.getModel().setMonth(calendar.get(Calendar.MONTH));
             datePicker.getModel().setYear(calendar.get(Calendar.YEAR));
-            datePicker.getJFormattedTextField().setText(recordDate.toString());
-            feeShareInput.setText(String.valueOf(currentAblum.getFeeShare()));
-            managerFeeShareInput.setText(String.valueOf(currentAblum.getManagerFeeShare()));
+//            datePicker.getJFormattedTextField().setText(recordDate.toString());
+            feeShareInput.setValue(new Double(currentAblum.getFeeShare() * 100).intValue());
+            managerFeeShareInput.setValue(new Double(currentAblum.getManagerFeeShare() * 100).intValue());
             managerBox.setSelectedIndex(dlm.getIndexOf(currentAblum.getManager()));
         }
     }
@@ -120,15 +123,8 @@ public class AlbumDetailsController extends JDialog {
         } else {
             album.setRecordDate(new Date(((java.util.Date) datePicker.getModel().getValue()).getTime()));
         }
-        try {
-            album.setFeeShare(Double.parseDouble(feeShareInput.getText()));
-            album.setManagerFeeShare(Double.parseDouble(managerFeeShareInput.getText()));
-            if (album.getFeeShare() < 0 || album.getManagerFeeShare() < 0)
-                    throw new IllegalArgumentException();
-        } catch (Exception ex) {
-            Application.showMessage(Strings.DIALOG_NUMBER_FORMAT_ERROR);
-            return;
-        }
+        album.setFeeShare((int) feeShareInput.getValue() * 0.01);
+        album.setManagerFeeShare((int) managerFeeShareInput.getValue() * 0.01);
         album.setManager(musicians.get(managerBox.getSelectedIndex()));
         try {
             if (createNew) {
@@ -167,5 +163,10 @@ public class AlbumDetailsController extends JDialog {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate localDate = LocalDate.parse(dateString, formatter);
         return localDate;
+    }
+
+    private void createUIComponents() {
+        feeShareInput = new JSpinner(new SpinnerNumberModel(50,0,100,1));
+        managerFeeShareInput = new JSpinner(new SpinnerNumberModel(50,0,100,1));
     }
 }

@@ -73,11 +73,8 @@ public class AlbumRepository implements IAlbumRepository {
         statement.setLong(6, album.getId());
         int albumCode = statement.executeUpdate();
         boolean priceCode = true;
-        if (album.getCurrentPrice() != Application.self.albumPriceRepository.getLastPriceFor(album)) {
-            try {
-                priceCode = Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
-            } catch (Exception e) {
-            }
+        if (album.getCurrentPrice() != null && album.getCurrentPrice() != Application.self.albumPriceRepository.getLastPriceFor(album)) {
+            priceCode = Application.self.albumPriceRepository.save(album.getCurrentPrice(), album);
         }
         return priceCode && albumCode == Constants.DB_SUCCESS_EXECUTION_CODE;
     }

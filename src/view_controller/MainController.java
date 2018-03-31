@@ -10,8 +10,15 @@ import java.awt.event.ActionListener;
 
 public class MainController {
 
+    private enum ScreenCode {
+        ALBUM, SONG, SALE
+    }
+
     private JFrame frame;
     private JComponent currentWindow;
+    private ScreenCode currentWindowCode;
+
+    private JMenuItem editCurrentAlbum;
 
     public void createAndShowGUI() {
         //Create and set up the window.
@@ -32,6 +39,11 @@ public class MainController {
     }
 
     private void update() {
+        if (currentWindowCode == ScreenCode.ALBUM) {
+            editCurrentAlbum.setEnabled(true);
+        } else {
+            editCurrentAlbum.setEnabled(false);
+        }
         frame.pack();
         frame.setVisible(true);
         frame.repaint();
@@ -48,6 +60,7 @@ public class MainController {
             }
             currentWindow = Application.self.albumViewController.getContentView();
             frame.add(currentWindow);
+            currentWindowCode = ScreenCode.ALBUM;
             update();
         });
         albumMenu.add(albumsViewItem);
@@ -56,10 +69,12 @@ public class MainController {
         albumNewItem.addActionListener(e -> AlbumDetailsController.presentDialog(true));
         albumMenu.add(albumNewItem);
 
-        JMenuItem albumEditCurrent = new JMenuItem(Strings.MENU_ALBUM_EDIT_CURRENT);
-        albumEditCurrent.addActionListener(e -> AlbumDetailsController.presentDialog(false,
-                Application.self.albumViewController.getCurrentId()));
-        albumMenu.add(albumEditCurrent);
+        editCurrentAlbum = new JMenuItem(Strings.MENU_ALBUM_EDIT_CURRENT);
+        editCurrentAlbum.addActionListener(e -> {
+            AlbumDetailsController.presentDialog(false,
+                Application.self.albumViewController.getCurrentId());
+        });
+        albumMenu.add(editCurrentAlbum);
 
         menuBar.add(albumMenu);
 
@@ -73,6 +88,7 @@ public class MainController {
             }
             currentWindow = Application.self.songViewController.getContentView();
             frame.add(currentWindow);
+            currentWindowCode = ScreenCode.SONG;
             update();
         });
         songMenu.add(viewSongs);
@@ -102,6 +118,7 @@ public class MainController {
             }
             currentWindow = Application.self.salesViewController.getContentView();
             frame.add(currentWindow);
+            currentWindowCode = ScreenCode.SALE;
             update();
         });
         salesMenu.add(salesViewItem);
