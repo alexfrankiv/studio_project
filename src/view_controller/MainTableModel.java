@@ -7,22 +7,18 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 import app.Application;
+import app.Strings;
 
 public class MainTableModel extends AbstractTableModel {
-	
+
 	private ArrayList data;
-	
-	MainTableModel() {
-		ArrayList arr = null;
-		try {
-			arr = (ArrayList) Application.self.saleService.getData();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+
+	MainTableModel() throws SQLException {
+		ArrayList arr = (ArrayList) Application.self.saleService.getData();
 		arr.trimToSize();
 		data = arr;
 	}
-	
+
 	MainTableModel(String type, String name) throws SQLException {//, Date from, Date till) throws SQLException, ParseException {
 		ArrayList arr = (ArrayList) Application.self.saleService.getData();
 		arr.trimToSize();
@@ -38,7 +34,7 @@ public class MainTableModel extends AbstractTableModel {
 		*/
 		data = arr;
 	}
-	
+
 	@Override
 	public int getColumnCount() {
 		return 7;
@@ -53,15 +49,18 @@ public class MainTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		return ((ArrayList) data.get(row)).get(col);
 	}
-	
+
 	public String getColumnName(int col) {
-		String[] names = { "����", "������", "����������", "��������", "�-�� / ̳����", "��������", "����" };
-		return (String) names[col]; 
+		String[] names = {
+				Strings.TABLE_LABEL_DATE, Strings.TABLE_LABEL_ALBUM,
+				Strings.TABLE_LABEL_MUSICIAN, Strings.TABLE_LABEL_OPERATION,
+				Strings.TABLE_LABEL_QTY_MONTH, Strings.TABLE_LABEL_CLIENT, Strings.TABLE_LABEL_TOTAL };
+		return (String) names[col];
 	}
-	
+
 	public Class getColumnClass(int col){
 		if (col == 6) return BigDecimal.class;
-		return String.class; 
+		return String.class;
 	}
 
 

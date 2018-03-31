@@ -1,6 +1,7 @@
 package service.impl;
 
 import app.Application;
+import app.Strings;
 import model.*;
 import model.dto.PreparedRevenue;
 
@@ -85,14 +86,14 @@ public class SaleService {
 				ArrayList<String> row = new ArrayList<String>();
 				if (f.getType() != Flow.FlowType.MUSICIAN_REVENUE) {
 					row.add(f.getDate().toString()); //����
-					row.add(f.getSale().getAlbum().getRecordDate().toString()); //������
+					row.add(f.getSale().getAlbum().getName()); //������
 					row.add(f.getSale().getAlbum().getManager().getFullName()); //����������
 					if (f.getType() == Flow.FlowType.LICENSE_PAYMENT) {
-						row.add("�������� �����");
-						row.add( ((LicensePayment)f).getMonth() + ""  ); //�����
+						row.add(Strings.OPERATION_OPTION_MONTHLY_PAYMENT);
+						row.add( Strings.MONTHS.get(((LicensePayment)f).getMonth())); //�����
 					}
 					else {
-						row.add("������� ������");
+						row.add(Strings.OPERATION_OPTION_RECORD_PURCHASE);
 						row.add( ((Record)f.getSale()).getQty() + "" ); //���
 					}
 					

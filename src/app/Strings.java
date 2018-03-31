@@ -1,5 +1,9 @@
 package app;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 public class Strings {
 
     public static final String MENU_ALBUM = "Album";
@@ -45,4 +49,30 @@ public class Strings {
     public static final  String INPUT_WRONG_SHARE = "Wrong format of share.Share must be in range from 0 to 1";
     public  static  final  String CHANGED_SONG= "Song is edited";
     public static final  String INSERTED_SONG = "Song is added";
+
+    public static final String SELECT_ALBUM_BUTTON = "Select";
+    public static final String FIELD_ALBUM_LABEL = "Album:";
+    public static final String FIELD_OPEARION_LABEL = "Operation:";
+    public static final String OPERATION_OPTION_NONE = "-";
+    public static final String OPERATION_OPTION_RECORD_PURCHASE = "record purchase";
+    public static final String OPERATION_OPTION_MONTHLY_PAYMENT = "monthly payment";
+    public static final String TABLE_LABEL_DATE = "Date";
+    public static final String TABLE_LABEL_ALBUM = "Album";
+    public static final String TABLE_LABEL_MUSICIAN =  "Musician";
+    public static final String TABLE_LABEL_OPERATION = "Operation";
+    public static final String TABLE_LABEL_QTY_MONTH = "Qty / Month";
+    public static final String TABLE_LABEL_CLIENT = "Client";
+    public static final String TABLE_LABEL_TOTAL = "Total";
+
+    public static Map<Integer, String> MONTHS = months();
+    private static Map<Integer, String> months() {
+        Map<Integer,String> map = new HashMap<Integer,String>();
+        map.put(1, "Jan"); map.put(2, "Feb");
+        map.put(3, "Mar"); map.put(4, "Apr");
+        map.put(5, "May"); map.put(6, "Jun");
+        map.put(7, "Jul"); map.put(8, "Aug");
+        map.put(9, "Sep"); map.put(10, "Oct");
+        map.put(11, "Nov"); map.put(12, "Dec");
+        return map;
+    };
 }
