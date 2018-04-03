@@ -147,14 +147,24 @@ public class MainController {
 
         menuBar.add(salesMenu);
 
+        //dummy for Musician part
+        //FIXME: to be implemented by Arthur
+        JMenu musicianMenu = new JMenu("Musician"); //TODO
+        JMenuItem viewMusicians = new JMenuItem("View musicians"); //TODO
+        viewMusicians.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
+        musicianMenu.add(viewMusicians);
+        JMenuItem newMusician = new JMenuItem("New..."); //TODO
+        newMusician.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
+        musicianMenu.add(newMusician);
+        JMenuItem editMusician = new JMenuItem("Edit..."); //TODO
+        editMusician.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
+        musicianMenu.add(editMusician);
+        menuBar.add(musicianMenu);
+
         //help menu
         JMenu helpMenu = new JMenu(Strings.MENU_HELP);
-        JMenuItem docsItem = new JMenuItem(Strings.MENU_HELP_DOCS);
-        docsItem.addActionListener(e -> System.out.println("DOCS STUB"));
-        helpMenu.add(docsItem);
-        helpMenu.addSeparator();
         JMenuItem aboutItem = new JMenuItem(Strings.MENU_HELP_ABOUT);
-        aboutItem.addActionListener(e -> System.out.println("ABOUT STUB"));
+        aboutItem.addActionListener(e -> Application.showMessage(Strings.ABOUT_TEXT));
         helpMenu.add(aboutItem);
 
         menuBar.add(helpMenu);
