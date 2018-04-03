@@ -6,6 +6,14 @@ import java.util.Map;
 
 public class Strings {
 
+    public static final String UNDER_CONSTRUCTION = "OOPS! This part of application is currently under construction...";
+    public static final String ABOUT_TEXT = "Studio Managemment System (2018).\n" +
+            "\n" +
+            "Version: 0.9 Release\n" +
+            "Build: 20180403-0001\n" +
+            "Developed by: Oleksandr FRANKIV, Nazar TKACH,\n" +
+            "Anton SHERSTIUK, Artur IVANENKO\n";
+
     public static final String MENU_ALBUM = "Album";
     public static final String MENU_ALBUM_VIEW = "View albums";
     public static final String MENU_ALBUM_NEW = "New...";
