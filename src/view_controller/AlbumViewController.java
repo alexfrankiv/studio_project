@@ -75,14 +75,15 @@ public class AlbumViewController {
         if (currentAlbum == null) {return;}
         albumNameLabel.setText(currentAlbum.getName());
         recordDateLabel.setText(currentAlbum.getRecordDate().toString());
-        albumFeeShareLabel.setText(String.valueOf(currentAlbum.getFeeShare()));
+        albumFeeShareLabel.setText(String.valueOf(new Double(currentAlbum.getFeeShare() * 100).intValue()) + '%');
         albumRateLabel.setText(String.valueOf(currentAlbum.getRating() * Constants.RATING_MAX_VALUE));
-        albumPriceLabel.setText(String.valueOf(currentAlbum.getCurrentPrice()));
+        BigDecimal currentPrice = currentAlbum.getCurrentPrice();
+        albumPriceLabel.setText((currentPrice == null) ? "Unknown" : String.valueOf(currentPrice));
 
         Musician manager = currentAlbum.getManager();
         managerNameLabel.setText(manager.getName() + ' ' + manager.getLastName());
         managerPhoneLabel.setText(manager.getPhone());
-        managerFeeShareLabel.setText(String.valueOf(currentAlbum.getManagerFeeShare()));
+        managerFeeShareLabel.setText(String.valueOf(new Double(currentAlbum.getManagerFeeShare() * 100).intValue()) + '%');
         managerRateLabel.setText(String.valueOf(currentAlbum.getManager().getRating() * Constants.RATING_MAX_VALUE));
     }
 

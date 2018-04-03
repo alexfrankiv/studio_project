@@ -39,7 +39,7 @@ public class SaleService {
 		int recId = Application.self.saleRepository.add(rec);
 		RecordCost rc = new RecordCost( rec, recId, Application.self.albumPriceRepository.getLastPriceFor(rec.getAlbum()));
 		Application.self.flowRepository.add(rc);
-		List<PreparedRevenue> pr = Application.self.flowRepository.getAlbumRevenues(rc, rec.getAlbumId());
+		List<PreparedRevenue> pr = Application.self.flowRepository.getAlbumRevenues(rc, (int) rec.getAlbumId());
 		for (PreparedRevenue i : pr)
 			Application.self.flowRepository.addRevenue(i);
 	}
@@ -50,7 +50,7 @@ public class SaleService {
 	
 	public void newLicensePayment(LicensePayment lp) throws SQLException {
 		Application.self.flowRepository.add(lp);
-		List<PreparedRevenue> pr = Application.self.flowRepository.getAlbumRevenues(lp, lp.getSale().getAlbumId());
+		List<PreparedRevenue> pr = Application.self.flowRepository.getAlbumRevenues(lp, (int) lp.getSale().getAlbumId());
 		for (PreparedRevenue i : pr)
 			Application.self.flowRepository.addRevenue(i);
 	}

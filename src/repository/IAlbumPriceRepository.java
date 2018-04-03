@@ -10,5 +10,5 @@ public interface IAlbumPriceRepository {
 
     BigDecimal getLastPriceFor(Album album) throws SQLException;
     BigDecimal getPriceFor(Album album, Date date);
-    boolean save(BigDecimal price, Album album) throws Exception;
+    boolean save(BigDecimal price, Album album) throws SQLException;
 }

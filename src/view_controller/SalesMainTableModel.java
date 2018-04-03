@@ -9,17 +9,17 @@ import javax.swing.table.AbstractTableModel;
 import app.Application;
 import app.Strings;
 
-public class MainTableModel extends AbstractTableModel {
+public class SalesMainTableModel extends AbstractTableModel {
 
 	private ArrayList data;
 
-	MainTableModel() throws SQLException {
+	SalesMainTableModel() throws SQLException {
 		ArrayList arr = (ArrayList) Application.self.saleService.getData();
 		arr.trimToSize();
 		data = arr;
 	}
 
-	MainTableModel(String type, String name) throws SQLException {//, Date from, Date till) throws SQLException, ParseException {
+	SalesMainTableModel(String type, String name) throws SQLException {//, Date from, Date till) throws SQLException, ParseException {
 		ArrayList arr = (ArrayList) Application.self.saleService.getData();
 		arr.trimToSize();
 		if (type != null)

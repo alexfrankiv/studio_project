@@ -8,13 +8,13 @@ public class License extends Sale {
 	private int period;
 	private boolean paid;
 	
-	public License(Date date, String client, int albumId, BigDecimal price, int period) {
+	public License(Date date, String client, long albumId, BigDecimal price, int period) {
 		super(date, client, albumId, SaleType.LICENSE);
 		this.price = price;
 		this.period = period;
 	}
 	
-	public License(int id, Date date, String client, int albumId, BigDecimal price, int period, boolean paid) {
+	public License(int id, Date date, String client, long albumId, BigDecimal price, int period, boolean paid) {
 		super(id, date, client, albumId, SaleType.LICENSE);
 		this.price = price;
 		this.period = period;
@@ -47,6 +47,11 @@ public class License extends Sale {
 
 	public void setPaid(boolean paid) {
 		this.paid = paid;
+	}
+
+	@Override
+	public String toString() {
+		return getId() + ": " + getAlbum().toString() + " - " + getClient() + " - " + getDate() + " +" + getPeriod() + " m";
 	}
 	
 }

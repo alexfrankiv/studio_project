@@ -13,8 +13,6 @@ public interface IAlbumService {
     Album getBy(String name) throws SQLException;
     boolean insert(Album album);
     boolean update(Album album) throws SQLException;
-//    boolean delete(Album MENU_ALBUM);
-    //boolean save(Album MENU_ALBUM);
 	List<String> getNames() throws SQLException;
 	List<String> getNames(List<Album> albums);
 	String[] getYears() throws SQLException;

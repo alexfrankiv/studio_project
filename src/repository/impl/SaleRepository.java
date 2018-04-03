@@ -26,7 +26,7 @@ public class SaleRepository implements ISaleRepository {
 		PreparedStatement s = c.prepareStatement(addSale, Statement.RETURN_GENERATED_KEYS);
 		s.setString(1, sale.getClient());
 		s.setDate(2, sale.getDate());
-		s.setInt(3, sale.getAlbumId());
+		s.setInt(3, (int)sale.getAlbumId());
 		int success = s.executeUpdate();
 		if (success != 1) return -1;
 		ResultSet rs = s.getGeneratedKeys();
@@ -89,7 +89,7 @@ public class SaleRepository implements ISaleRepository {
 		PreparedStatement s = c.prepareStatement(updateSale);
         s.setString(1, sale.getClient());
         s.setDate(2, sale.getDate());
-        s.setInt(3, sale.getAlbumId());
+        s.setInt(3, (int)sale.getAlbumId());
         s.setInt(4, sale.getId());
         int success = s.executeUpdate();
         if (success != 1) return false;

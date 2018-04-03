@@ -8,6 +8,7 @@ import service.IMusicianSongService;
 import service.ISongService;
 import service.impl.*;
 import view_controller.*;
+import view_controller.SalesViewController;
 
 import javax.swing.*;
 
@@ -35,10 +36,13 @@ public class Application {
     // MARK: controllers
     public final MainController mainController = new MainController();
     public AlbumViewController albumViewController;
-    public SalesViewController salesViewController;
     public AlbumDetailsController newAlbumViewController;
     public SongMusicianController songMusicianController;
     public SongViewController songViewController;
+    public SalesViewController salesViewController;
+    public SalesNewController salesNewController;
+    public SalesLicenseController salesLicenseController;
+
 
     // MARK: general behaviour
     public static void showMessage(String message) {

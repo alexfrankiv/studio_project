@@ -13,6 +13,8 @@ public class Strings {
 
     public static final String MENU_SALES = "Sale";
     public static final String MENU_SALES_VIEW = "View sales";
+    public static final String MENU_SALES_NEW = "New...";
+    public static final String MENU_SALES_LICENSES = "Manage licenses";
 //    public static final String MENU_ALBUM_EDIT_CURRENT = "Edit current...";
 //    public static final String MENU_ALBUM_EDIT_CURRENT = "Edit current...";
 
@@ -22,6 +24,7 @@ public class Strings {
 
     public static final String DIALOG_NEW_PRICE = "Please specify new price: ";
     public static final String DIALOG_NUMBER_FORMAT_ERROR = "Please specify correct number!";
+    public static final String DIALOG_INVALID_NUMBER_ERROR = "Please specify number between 0 and 1!";
     public static final String DIALOG_ILLEGAL_PRICE_CHANGE_ERROR = "Cannot change price more often than once a day";
     public static final String DIALOG_EMPTY_NAME_ERROR = "Please specify name";
     public static final String DIALOG_EMPTY_DATE_ERROR = "Please specify date";
@@ -31,24 +34,24 @@ public class Strings {
 
     public static final String MENU_SONG_VIEW = "View songs";
     public static final String MENU_SONG = "Song";
-    public static final  String MENU_SONG_EDIT = "Edit";
-    public static final String MENU_SONG_NEW = "New";
+    public static final String MENU_SONG_EDIT = "Edit";
+    public static final String MENU_SONG_NEW = "New...";
 
 
     public static final String MENU_SONG_CHANGE_SHARE = "Change share";
     public static final String  DIALOG_FAILED_INSERTIONS_SONG = " Failed at insertion of song";
-    public  static final String  DIALOG_EMPTY_AUTHOR_ERROR = "Please input author name";
+    public static final String  DIALOG_EMPTY_AUTHOR_ERROR = "Please input author name";
     public static final String  DIALOG_WRONG_ALBUM_ERROR = "Wrong album name";
     public static final String DIALOG_ADD_MUSICIAN = "Add musician";
     public static final String DIALOG_MUSICIAN_ADDED_TO_SONG  = "SUCCESS. Musician added";
     public static final String DIALOG_NEW_SONG_TITLE="New song:";
     public static final String DIALOG_EDIT_SONG_TITLE="Edit song:";
     public static final String DIALOG_CHOOSE_SONG ="Please choose a song";
-    public  static  final String MENU_MUSICIAN_SHARE = "Musicians share";
+    public static final String MENU_MUSICIAN_SHARE = "Musicians share";
     public static final String SHARE_CHANGED = "Share changed";
-    public static final  String INPUT_WRONG_SHARE = "Wrong format of share.Share must be in range from 0 to 1";
-    public  static  final  String CHANGED_SONG= "Song is edited";
-    public static final  String INSERTED_SONG = "Song is added";
+	public static final String INPUT_WRONG_SHARE = "Wrong format of share.Share must be in range from 0 to 1";
+    public static final String CHANGED_SONG= "Song is edited";
+    public static final String INSERTED_SONG = "Song is added";
 
     public static final String SELECT_ALBUM_BUTTON = "Select";
     public static final String FIELD_ALBUM_LABEL = "Album:";
@@ -63,16 +66,22 @@ public class Strings {
     public static final String TABLE_LABEL_QTY_MONTH = "Qty / Month";
     public static final String TABLE_LABEL_CLIENT = "Client";
     public static final String TABLE_LABEL_TOTAL = "Total";
+    public static final String NEW_LABEL_CLIENT = "Client:";
+    public static final String NEW_LABEL_QTY = "Quantity:";
+    public static final String NEW_LABEL_LICENSE = "License:";
+    public static final String NEW_LABEL_COST = "Cost:";
+    public static final String NEW_LABEL_MONTHS = "Months:";
+    public static final String NEW_BTN_CONFIRM = "Confirm";
 
     public static Map<Integer, String> MONTHS = months();
     private static Map<Integer, String> months() {
         Map<Integer,String> map = new HashMap<Integer,String>();
-        map.put(1, "Jan"); map.put(2, "Feb");
-        map.put(3, "Mar"); map.put(4, "Apr");
-        map.put(5, "May"); map.put(6, "Jun");
-        map.put(7, "Jul"); map.put(8, "Aug");
-        map.put(9, "Sep"); map.put(10, "Oct");
-        map.put(11, "Nov"); map.put(12, "Dec");
+        map.put(1, "JAN"); map.put(2, "FEB");
+        map.put(3, "MAR"); map.put(4, "APR");
+        map.put(5, "MAY"); map.put(6, "JUN");
+        map.put(7, "JUL"); map.put(8, "AUG");
+        map.put(9, "SEP"); map.put(10, "OCT");
+        map.put(11, "NOV"); map.put(12, "DEC");
         return map;
     };
 }

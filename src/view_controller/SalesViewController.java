@@ -41,7 +41,7 @@ public class SalesViewController {
 	private void initialize( ) {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 103, 103, 0, 0, 0, 0, 0, 0};
-		gbl_contentPane.rowHeights = new int[]{23, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{15, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		contentView.setLayout(gbl_contentPane);
@@ -105,7 +105,7 @@ public class SalesViewController {
 				}
 			}
 		});
-		contentView.add(selectButton, gbc_selectButton);
+		//contentView.add(selectButton, gbc_selectButton);
 
 		JLabel operationLabel = new JLabel(Strings.FIELD_OPEARION_LABEL);
 		operationLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -153,7 +153,7 @@ public class SalesViewController {
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		try {
-			table.setModel(new MainTableModel());
+			table.setModel(new SalesMainTableModel());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -172,7 +172,7 @@ public class SalesViewController {
 		dialog.setVisible(true);*/
 	}
 
-	private void refreshTable( ) throws SQLException {
+	public void refreshTable( ) throws SQLException {
 		String name = null;
 		String type = null;
 		if (!((String)albumBox.getSelectedItem()).equals(Strings.OPERATION_OPTION_NONE))
@@ -180,7 +180,7 @@ public class SalesViewController {
 		if (!((String)operationBox.getSelectedItem()).equals(Strings.OPERATION_OPTION_NONE))
 			type = (String)operationBox.getSelectedItem();
 		//System.out.println(name);System.out.println(type);
-		table.setModel(new MainTableModel(type,name));
+		table.setModel(new SalesMainTableModel(type,name));
 	}
 
 }

@@ -5,13 +5,19 @@ import app.Strings;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class MainController {
 
+    private enum ScreenCode {
+        ALBUM, SONG, SALE
+    }
+
     private JFrame frame;
     private JComponent currentWindow;
+    private ScreenCode currentWindowCode;
+
+    private JMenuItem editCurrentAlbum;
 
     public void createAndShowGUI() {
         //Create and set up the window.
@@ -26,12 +32,19 @@ public class MainController {
         Application.self.albumViewController = new AlbumViewController();
         Application.self.songViewController = new SongViewController();
         Application.self.salesViewController = new SalesViewController();
+        Application.self.salesNewController = new SalesNewController();
+        Application.self.salesLicenseController = new SalesLicenseController();
 //        frame.add(Application.self.albumViewController.getContentView());
 //
         update();
     }
 
     private void update() {
+        if (currentWindowCode == ScreenCode.ALBUM) {
+            editCurrentAlbum.setEnabled(true);
+        } else {
+            editCurrentAlbum.setEnabled(false);
+        }
         frame.pack();
         frame.setVisible(true);
         frame.repaint();
@@ -48,6 +61,7 @@ public class MainController {
             }
             currentWindow = Application.self.albumViewController.getContentView();
             frame.add(currentWindow);
+            currentWindowCode = ScreenCode.ALBUM;
             update();
         });
         albumMenu.add(albumsViewItem);
@@ -56,10 +70,12 @@ public class MainController {
         albumNewItem.addActionListener(e -> AlbumDetailsController.presentDialog(true));
         albumMenu.add(albumNewItem);
 
-        JMenuItem albumEditCurrent = new JMenuItem(Strings.MENU_ALBUM_EDIT_CURRENT);
-        albumEditCurrent.addActionListener(e -> AlbumDetailsController.presentDialog(false,
-                Application.self.albumViewController.getCurrentId()));
-        albumMenu.add(albumEditCurrent);
+        editCurrentAlbum = new JMenuItem(Strings.MENU_ALBUM_EDIT_CURRENT);
+        editCurrentAlbum.addActionListener(e -> {
+            AlbumDetailsController.presentDialog(false,
+                Application.self.albumViewController.getCurrentId());
+        });
+        albumMenu.add(editCurrentAlbum);
 
         menuBar.add(albumMenu);
 
@@ -73,6 +89,7 @@ public class MainController {
             }
             currentWindow = Application.self.songViewController.getContentView();
             frame.add(currentWindow);
+            currentWindowCode = ScreenCode.SONG;
             update();
         });
         songMenu.add(viewSongs);
@@ -100,11 +117,33 @@ public class MainController {
             if (currentWindow != null) {
                 frame.remove(currentWindow);
             }
+            try {
+                Application.self.salesViewController.refreshTable();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             currentWindow = Application.self.salesViewController.getContentView();
             frame.add(currentWindow);
+            currentWindowCode = ScreenCode.SALE;
             update();
         });
         salesMenu.add(salesViewItem);
+
+        JMenuItem salesNewItem = new JMenuItem(Strings.MENU_SALES_NEW);
+        salesNewItem.addActionListener(e -> {
+            if (currentWindow != null) {
+                frame.remove(currentWindow);
+            }
+            currentWindow = Application.self.salesNewController.getContentView();
+            frame.add(currentWindow);
+            currentWindowCode = ScreenCode.SALE;
+            update();
+        });
+        salesMenu.add(salesNewItem);
+
+        JMenuItem salesLicenseMenu = new JMenuItem(Strings.MENU_SALES_LICENSES);
+        salesLicenseMenu.addActionListener(e -> Application.self.salesLicenseController.show());
+        salesMenu.add(salesLicenseMenu);
 
         menuBar.add(salesMenu);
 

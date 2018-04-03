@@ -9,11 +9,11 @@ public abstract class Sale {
 	protected int id;
 	protected Date date;
 	protected String client;
-	protected int albumId;
+	protected long albumId;
 	protected Album album;
 	protected SaleType type;
 	
-	protected Sale(Date date, String client, int albumId, SaleType type) {
+	protected Sale(Date date, String client, long albumId, SaleType type) {
 		this.id = -1;
 		this.date = date;
 		this.client = client;
@@ -21,7 +21,7 @@ public abstract class Sale {
 		this.type = type;
 	}
 	
-	protected Sale(int id, Date date, String client, int albumId, SaleType type) {
+	protected Sale(int id, Date date, String client, long albumId, SaleType type) {
 		this.id = id;
 		this.date = date;
 		this.client = client;
@@ -53,7 +53,7 @@ public abstract class Sale {
 		this.client = client;
 	}
 	
-	public int getAlbumId() {
+	public long getAlbumId() {
 		return albumId;
 	}
 
