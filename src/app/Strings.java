@@ -59,19 +59,16 @@ public class Strings {
     public static final String OPERATION_OPTION_NONE = "-";
     public static final String OPERATION_OPTION_RECORD_PURCHASE = "record purchase";
     public static final String OPERATION_OPTION_MONTHLY_PAYMENT = "monthly payment";
-    public static final String TABLE_LABEL_DATE = "Date";
-    public static final String TABLE_LABEL_ALBUM = "Album";
-    public static final String TABLE_LABEL_MUSICIAN =  "Musician";
-    public static final String TABLE_LABEL_OPERATION = "Operation";
-    public static final String TABLE_LABEL_QTY_MONTH = "Qty / Month";
-    public static final String TABLE_LABEL_CLIENT = "Client";
-    public static final String TABLE_LABEL_TOTAL = "Total";
     public static final String NEW_LABEL_CLIENT = "Client:";
     public static final String NEW_LABEL_QTY = "Quantity:";
     public static final String NEW_LABEL_LICENSE = "License:";
     public static final String NEW_LABEL_COST = "Cost:";
     public static final String NEW_LABEL_MONTHS = "Months:";
     public static final String NEW_BTN_CONFIRM = "Confirm";
+    public static final String SALES_LICENSE_TITLE = "Licenses";
+
+    public static final String[] SALES_MAIN_TABLE_LABELS = { "Date", "Album", "Musician", "Operation", "Qty / Month", "Client", "Total" };
+    public static final String[] SALES_LICENSE_TABLE_LABELS = { "#", "Date", "Album", "Musician", "Duration (month)", "Paid", "Client" };
 
     public static Map<Integer, String> MONTHS = months();
     private static Map<Integer, String> months() {

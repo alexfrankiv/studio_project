@@ -51,7 +51,7 @@ public class License extends Sale {
 
 	@Override
 	public String toString() {
-		return getId() + ": " + getAlbum().toString() + " - " + getClient() + " - " + getDate() + " +" + getPeriod() + " m";
+		return getId() + ": " + getAlbum().toString() + " - " + getClient() + " - " + getDate() + " +" + getPeriod() + " mo.";
 	}
 	
 }

@@ -25,27 +25,38 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import app.Application;
+import app.Strings;
+import model.Album;
 import model.License;
 import java.sql.SQLException;
 
-public class SalesLicenseController {
+public class SalesLicenseController extends JDialog {
+    private JTable table;
+    private JComboBox albumBox;
+    private JComboBox newAlbumBox;
+    private JPanel newPanel;
     private JPanel contentPane;
     private JTextField newClientField;
     private JTextField newPriceField;
     private JCheckBox currentCheck;
     private JCheckBox paidCheck;
 
-    SalesLicenseController() {}
-
-    public void show() {
-
+    SalesLicenseController() {
+        initialize();
     }
-    /*
+
+    public void display() {
+        setVisible(true);
+    }
+
 
     public void initialize() {
-        setTitle("Ліцензії");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle(Strings.SALES_LICENSE_TITLE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(150, 150, 500, 550);
 
         contentPane = new JPanel();
@@ -58,14 +69,15 @@ public class SalesLicenseController {
         gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         contentPane.setLayout(gbl_contentPane);
 
-        */
 
-		/*
+        /*
 		currentCheck = new JCheckBox("поточні");
 		currentCheck.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+
 					refreshTable();
+
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -97,9 +109,8 @@ public class SalesLicenseController {
 		gbc_paidCheck.anchor = GridBagConstraints.WEST;
 		gbc_paidCheck.gridx = 2;
 		gbc_paidCheck.gridy = 1;
-		contentPane.add(paidCheck, gbc_paidCheck);*/
-
-		/*
+		contentPane.add(paidCheck, gbc_paidCheck);
+		*/
 
         JButton editButton = new JButton("ЗМІНИТИ");
         editButton.setFont(new Font("Tahoma", Font.BOLD, 9));
@@ -120,8 +131,12 @@ public class SalesLicenseController {
         contentPane.add(lblP, gbc_lblP);
 
         albumBox = new JComboBox();
-        for(String i : saleSer.getAlbSer().getNames())
-            albumBox.addItem(i);
+        try {
+            for(Album i : Application.self.albumRepository.all())
+                albumBox.addItem(i);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         GridBagConstraints gbc_albumBox = new GridBagConstraints();
         gbc_albumBox.gridwidth = 2;
         gbc_albumBox.insets = new Insets(0, 0, 5, 5);
@@ -168,7 +183,12 @@ public class SalesLicenseController {
 
         table = new JTable();
         scrollPane.setViewportView(table);
-        LicenseTableModel model = new LicenseTableModel(saleSer);
+        LicenseTableModel model = null;
+        try {
+            model = new LicenseTableModel();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         JLabel newLabel = new JLabel("Нова ліцензія");
         newLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -203,8 +223,12 @@ public class SalesLicenseController {
         newPanel.add(newAlbumLabel, gbc_newAlbumLabel);
 
         newAlbumBox = new JComboBox();
-        for(String i : saleSer.getAlbSer().getNames())
-            newAlbumBox.addItem(i);
+        try {
+            for(Album i : Application.self.albumRepository.all())
+                newAlbumBox.addItem(i);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         GridBagConstraints gbc_newAlbumBox = new GridBagConstraints();
         gbc_newAlbumBox.gridwidth = 3;
         gbc_newAlbumBox.insets = new Insets(0, 0, 5, 5);
@@ -312,10 +336,10 @@ public class SalesLicenseController {
                     try {
                         License li = new License(new java.sql.Date(Calendar.getInstance().getTime().getTime()),
                                 newClientField.getText(),
-                                saleSer.getAlbSer().getIdByShort( (String)newAlbumBox.getSelectedItem() ),
+                                ((Album)newAlbumBox.getSelectedItem()).getId(),
                                 new BigDecimal(newPriceField.getText()),
                                 ((int) newPeriodSpinner.getValue()));
-                        saleSer.newLicenseSale(li);
+                        Application.self.saleService.newLicenseSale(li);
                         //model.addRow(saleSer.getLicenseRow(li).toArray());
                         refreshTable(null);
                     } catch (SQLException e) {
@@ -339,18 +363,10 @@ public class SalesLicenseController {
         gbc_newButton.gridy = 6;
         newPanel.add(newButton, gbc_newButton);
 
-        JButton exitBtn = new JButton("Зачинити");
+        JButton exitBtn = new JButton("Вихід");
         exitBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                try {
-                    MainFrame mainf;
-                    mainf = new MainFrame(saleSer);
-                    dispose();
-                    mainf.setVisible(true);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
+                dispose();
             }
         });
         exitBtn.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -361,13 +377,13 @@ public class SalesLicenseController {
         contentPane.add(exitBtn, gbc_exitBtn);
         table.setModel(model);
         //table.getColumn(0).setPreferredWidth(5);
-		/*
+
 		table.getSelectionModel().addListSelectionListener((new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				try {
 					int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-					License li = (License) saleSer.getById(id);
+					License li = (License) Application.self.saleService.getById(id);
 					if (!li.isPaid()) {
 						editButton.setEnabled(true);
 					}
@@ -379,9 +395,9 @@ public class SalesLicenseController {
 					e.printStackTrace();
 				}
 			}
-	    }));*/
+	    }));
 
-		/*
+
         clientError.setVisible(false);
         priceError.setVisible(false);
         monthError.setVisible(false);
@@ -398,19 +414,16 @@ public class SalesLicenseController {
         }
         dialog.setVisible(true);
         */
-/*    }
+    }
 
     private void refreshTable(String album) throws SQLException {
         //if (currentCheck.isSelected() && paidCheck.isSelected())
         if (album == null)
-            table.setModel(new LicenseTableModel(saleSer));
+            table.setModel(new LicenseTableModel());
         else
-            table.setModel(new LicenseTableModel(saleSer, null, album));
+            table.setModel(new LicenseTableModel(null, album));
         //else if (!currentCheck.isSelected() && !paidCheck.isSelected())
         //	table.setModel(new LicenseTableModel(saleSer));
     }
-
-
-    */
 
 }

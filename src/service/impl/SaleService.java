@@ -115,13 +115,15 @@ public class SaleService {
 			ArrayList<String> row = new ArrayList<>();
 			row.add(li.getId() + ""); //id
 			row.add(li.getDate().toString()); //����
-			row.add(li.getAlbum().getRecordDate().toString()); //������
+			row.add(li.getAlbum().getName()); //������
 			row.add(li.getAlbum().getManager().getFullName()); //����������
-			row.add(((License)li).getPeriod() + " ��."); //������
-			if (((License)li).isPaid())
-				row.add(((License)li).getSum() + " UAH");
-			else
-				row.add(getSaleRevenue(li) + " / " + ((License)li).getSum()); //���������
+			row.add(((License)li).getPeriod() + " mo."); //������
+			if (((License)li).isPaid()) {
+				row.add(((License) li).getSum() + " UAH");
+			}
+			else {
+				row.add(getSaleRevenue(li) + " / " + ((License) li).getSum()); //���������
+			}
 			row.add(li.getClient()); //��������
 			row.trimToSize();
 			table.add(row);

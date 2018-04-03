@@ -33,7 +33,7 @@ public class Album {
 
     @Override
     public String toString() {
-        return name + ' ' + new SimpleDateFormat("yyyy").format(recordDate);
+        return name + " [" + new SimpleDateFormat("yyyy").format(recordDate) + ']';
     }
 
     public long getId() {

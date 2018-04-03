@@ -142,7 +142,7 @@ public class MainController {
         salesMenu.add(salesNewItem);
 
         JMenuItem salesLicenseMenu = new JMenuItem(Strings.MENU_SALES_LICENSES);
-        salesLicenseMenu.addActionListener(e -> Application.self.salesLicenseController.show());
+        salesLicenseMenu.addActionListener(e -> Application.self.salesLicenseController.display());
         salesMenu.add(salesLicenseMenu);
 
         menuBar.add(salesMenu);

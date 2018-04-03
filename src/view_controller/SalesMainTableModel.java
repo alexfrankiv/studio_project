@@ -51,10 +51,7 @@ public class SalesMainTableModel extends AbstractTableModel {
 	}
 
 	public String getColumnName(int col) {
-		String[] names = {
-				Strings.TABLE_LABEL_DATE, Strings.TABLE_LABEL_ALBUM,
-				Strings.TABLE_LABEL_MUSICIAN, Strings.TABLE_LABEL_OPERATION,
-				Strings.TABLE_LABEL_QTY_MONTH, Strings.TABLE_LABEL_CLIENT, Strings.TABLE_LABEL_TOTAL };
+		String[] names = Strings.SALES_MAIN_TABLE_LABELS;
 		return (String) names[col];
 	}
 
