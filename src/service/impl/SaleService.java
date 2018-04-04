@@ -142,6 +142,14 @@ public class SaleService {
 				list.add(row);
 		return list;
 	}
+
+	public List filterByAlbum(Album album, List<ArrayList<String>> in) {
+		List<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+		for (ArrayList<String> row : in)
+			if (row.get(2).contains(album.getName()))
+				list.add(row);
+		return list;
+	}
 	
 	public List filterByType(String type, List<ArrayList<String>> in) {
 		List<ArrayList<String>> list = new ArrayList<ArrayList<String>>();

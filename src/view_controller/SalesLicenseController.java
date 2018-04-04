@@ -57,7 +57,7 @@ public class SalesLicenseController extends JDialog {
     public void initialize() {
         setTitle(Strings.SALES_LICENSE_TITLE);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(150, 150, 500, 550);
+        setBounds(150, 150, 800, 550);
 
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -131,6 +131,7 @@ public class SalesLicenseController extends JDialog {
         contentPane.add(lblP, gbc_lblP);
 
         albumBox = new JComboBox();
+        albumBox.addItem(null);
         try {
             for(Album i : Application.self.albumRepository.all())
                 albumBox.addItem(i);
@@ -146,7 +147,7 @@ public class SalesLicenseController extends JDialog {
         albumBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    refreshTable(albumBox.getSelectedItem().toString());
+                    refreshTable((Album)albumBox.getSelectedItem());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -155,6 +156,7 @@ public class SalesLicenseController extends JDialog {
 
         contentPane.add(albumBox, gbc_albumBox);
 
+        /*
         JButton selectionBtn = new JButton("Обрати");
         selectionBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -170,6 +172,7 @@ public class SalesLicenseController extends JDialog {
         gbc_selectionBtn.gridx = 4;
         gbc_selectionBtn.gridy = 2;
         contentPane.add(selectionBtn, gbc_selectionBtn);
+        */
 
         JScrollPane scrollPane = new JScrollPane();
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
@@ -236,6 +239,9 @@ public class SalesLicenseController extends JDialog {
         gbc_newAlbumBox.gridx = 2;
         gbc_newAlbumBox.gridy = 1;
 
+        newPanel.add(newAlbumBox, gbc_newAlbumBox);
+
+        /*
         JButton newSelectBtn = new JButton("Обрати");
         newSelectBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -247,13 +253,12 @@ public class SalesLicenseController extends JDialog {
             }
         });
 
-        newPanel.add(newAlbumBox, gbc_newAlbumBox);
-
         GridBagConstraints gbc_newSelectBtn = new GridBagConstraints();
         gbc_newSelectBtn.insets = new Insets(0, 0, 5, 5);
         gbc_newSelectBtn.gridx = 5;
         gbc_newSelectBtn.gridy = 1;
         newPanel.add(newSelectBtn, gbc_newSelectBtn);
+        */
 
         JLabel newClient = new JLabel("Покупець :");
         GridBagConstraints gbc_newClient = new GridBagConstraints();
@@ -416,7 +421,7 @@ public class SalesLicenseController extends JDialog {
         */
     }
 
-    private void refreshTable(String album) throws SQLException {
+    private void refreshTable(Album album) throws SQLException {
         //if (currentCheck.isSelected() && paidCheck.isSelected())
         if (album == null)
             table.setModel(new LicenseTableModel());

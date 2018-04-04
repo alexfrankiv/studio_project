@@ -2,6 +2,7 @@ package view_controller;
 
 import app.Application;
 import app.Strings;
+import model.Album;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -21,13 +22,14 @@ public class LicenseTableModel extends AbstractTableModel {
         data = arr;
     }
 
-    LicenseTableModel(String type, String name) throws SQLException {//, Date from, Date till) throws SQLException, ParseException {
+    LicenseTableModel(String type, Album album) throws SQLException {//, Date from, Date till) throws SQLException, ParseException {
         ArrayList arr = (ArrayList) Application.self.saleService.getLicenseData();
         arr.trimToSize();
         if (type != null)
             arr = (ArrayList) Application.self.saleService.filterByType(type, arr);
-        if (name != null)
-            arr = (ArrayList) Application.self.saleService.filterByArtist(name, arr);
+        if (album != null) {
+            arr = (ArrayList) Application.self.saleService.filterByAlbum(album, arr);
+        }
 		/*
 		if (from != null)
 			arr = (ArrayList) saleSer.filterByStart(from, arr);
