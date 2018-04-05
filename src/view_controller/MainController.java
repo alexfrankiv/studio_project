@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class MainController {
 
     private enum ScreenCode {
-        ALBUM, SONG, SALE
+        ALBUM, SONG, SALE, MUSICIAN
     }
 
     private JFrame frame;
@@ -34,6 +34,7 @@ public class MainController {
         Application.self.salesViewController = new SalesViewController();
         Application.self.salesNewController = new SalesNewController();
         Application.self.salesLicenseController = new SalesLicenseController();
+        Application.self.musicianViewController = new MusicianViewController();
 //        frame.add(Application.self.albumViewController.getContentView());
 //
         update();
@@ -149,10 +150,19 @@ public class MainController {
 
         //dummy for Musician part
         //FIXME: to be implemented by Arthur
-        JMenu musicianMenu = new JMenu("Musician"); //TODO
-        JMenuItem viewMusicians = new JMenuItem("View musicians"); //TODO
-        viewMusicians.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
-        musicianMenu.add(viewMusicians);
+        JMenu musicianMenu = new JMenu(Strings.MENU_MUSICIAN);
+        JMenuItem musicianViewItem = new JMenuItem(Strings.MENU_MUSICIAN_VIEW);
+        musicianViewItem.addActionListener(e -> {
+            if (currentWindow != null) {
+                frame.remove(currentWindow);
+            }
+            currentWindow = Application.self.musicianViewController.getContentView();
+            frame.add(currentWindow);
+            currentWindowCode = ScreenCode.MUSICIAN;
+            update();
+        });
+        musicianMenu.add(musicianViewItem);
+
         JMenuItem newMusician = new JMenuItem("New..."); //TODO
         newMusician.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
         musicianMenu.add(newMusician);
@@ -160,6 +170,7 @@ public class MainController {
         editMusician.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
         musicianMenu.add(editMusician);
         menuBar.add(musicianMenu);
+
 
         //help menu
         JMenu helpMenu = new JMenu(Strings.MENU_HELP);

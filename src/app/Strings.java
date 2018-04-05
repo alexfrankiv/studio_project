@@ -25,6 +25,14 @@ public class Strings {
     public static final String MENU_SALES_LICENSES = "Manage licenses";
 //    public static final String MENU_ALBUM_EDIT_CURRENT = "Edit current...";
 //    public static final String MENU_ALBUM_EDIT_CURRENT = "Edit current...";
+    ///////
+    public static final String MENU_MUSICIAN = "Musiciant";
+    public static final String MENU_MUSICIAN_VIEW = "View musiciant";
+
+
+    ///////
+
+
 
     public static final String MENU_HELP = "Help";
     public static final String MENU_HELP_DOCS = "Documentation";
@@ -60,6 +68,11 @@ public class Strings {
 	public static final String INPUT_WRONG_SHARE = "Wrong format of share.Share must be in range from 0 to 1";
     public static final String CHANGED_SONG= "Song is edited";
     public static final String INSERTED_SONG = "Song is added";
+
+    ////////
+    public static final String SELECT_MUSICIANT_BUTTON = "Select";
+    public static final String FIELD_MUSICIANT_LABEL = "Album:";
+    //////
 
     public static final String SELECT_ALBUM_BUTTON = "Select";
     public static final String FIELD_ALBUM_LABEL = "Album:";
