@@ -137,6 +137,14 @@ public class SaleRepository implements ISaleRepository {
 		ResultSet rs = s.executeQuery();
         return toLicenseList(rs);
 	}
+
+	@Override
+	public List<Sale> getOngoingLicenses() throws SQLException {
+		Connection c = DBConnector.shared.getConnect();
+		PreparedStatement s = c.prepareStatement(getOngoingLicenses);
+		ResultSet rs = s.executeQuery();
+		return toLicenseList(rs);
+	}
 	
 	@Override
 	public List<Sale> getRecords() throws SQLException {
@@ -181,6 +189,8 @@ public class SaleRepository implements ISaleRepository {
 	//private static final String getAll = "SELECT * FROM sale;";
 	private static final String getLicenses =
 			"SELECT id, client, date, album_id, price, period, paid FROM sale JOIN license ON sale.id=license.sale_id;";
+	private static final String getOngoingLicenses =
+			"SELECT id, client, date, album_id, price, period, paid FROM sale JOIN license ON sale.id=license.sale_id WHERE paid=0;";
 	private static final String getRecords =
 			"SELECT id, client, date, album_id, amount FROM sale JOIN record ON sale.id=record.sale_id;";
 	private static final String getById =

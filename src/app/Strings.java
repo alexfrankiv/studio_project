@@ -67,13 +67,31 @@ public class Strings {
     public static final String OPERATION_OPTION_NONE = "-";
     public static final String OPERATION_OPTION_RECORD_PURCHASE = "record purchase";
     public static final String OPERATION_OPTION_MONTHLY_PAYMENT = "monthly payment";
-    public static final String NEW_LABEL_CLIENT = "Client:";
-    public static final String NEW_LABEL_QTY = "Quantity:";
-    public static final String NEW_LABEL_LICENSE = "License:";
-    public static final String NEW_LABEL_COST = "Cost:";
-    public static final String NEW_LABEL_MONTHS = "Months:";
-    public static final String NEW_BTN_CONFIRM = "Confirm";
+    public static final String SALES_NEW_LABEL_CLIENT = "Client:";
+    public static final String SALES_NEW_LABEL_QTY = "Quantity:";
+    public static final String SALES_NEW_LABEL_LICENSE = "License:";
+    public static final String SALES_NEW_LABEL_COST = "Cost:";
+    public static final String SALES_NEW_LABEL_MONTHS = "Months:";
+    public static final String SALES_NEW_BTN_CONFIRM = "Confirm";
+    public static final String SALES_NEW_CONFIRMATION_TITLE = "Confirm payment";
+    public static final String SALES_NEW_CONFIRMATION_MESSAGE = "Please check all the details " +
+            "and click 'OK' to complete the payment:\n" +
+            "0\n" +
+            "1\n" +
+            "2\n" +
+            "3";
     public static final String SALES_LICENSE_TITLE = "Licenses";
+    public static final String SALES_LICENSE_HIDE_PAID_CHECKBOX = " hide paid";
+    public static final String SALES_LICENSE_NEW = "New license";
+    public static final String SALES_LICENSE_MONTHLY_PAYM = "Monthly paym.";
+    public static final String SALES_LICENSE_CREATE = "Create";
+    public static final String SALES_LICENSE_CLOSE = "Close";
+    public static final String SALES_LICENSE_DELETE = "DELETE";
+    public static final String SALES_LICENSE_EDIT = "EDIT";
+    public static final String SALES_LICENSE_EDIT_ALBUM = "Album:  \t";
+    public static final String SALES_LICENSE_EDIT_PURCHASED = "\tPurchased: \t";
+    public static final String SALES_LICENSE_EDIT_CLIENT_NAME = "Client name: \t";
+    public static final String SALES_LICENSE_EDIT_CHANGE_DURATION = "Change duration by, mo.: \t";
 
     public static final String[] SALES_MAIN_TABLE_LABELS = { "Date", "Album", "Musician", "Operation", "Qty / Month", "Client", "Total" };
     public static final String[] SALES_LICENSE_TABLE_LABELS = { "#", "Date", "Album", "Musician", "Duration (month)", "Paid", "Client" };

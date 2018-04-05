@@ -11,18 +11,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Calendar;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -32,7 +21,7 @@ import app.Application;
 import app.Strings;
 import model.Album;
 import model.License;
-import java.sql.SQLException;
+import model.Sale;
 
 public class SalesLicenseController extends JDialog {
     private JTable table;
@@ -44,12 +33,23 @@ public class SalesLicenseController extends JDialog {
     private JTextField newPriceField;
     private JCheckBox currentCheck;
     private JCheckBox paidCheck;
+    JButton editButton;
+    JButton deleteButton;
+    int selectedId;
+    boolean changeUnderway;
+    boolean hideCheck;
 
     SalesLicenseController() {
         initialize();
     }
 
     public void display() {
+        hideCheck = true;
+        try {
+            refreshTable(null, hideCheck);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         setVisible(true);
     }
 
@@ -69,34 +69,12 @@ public class SalesLicenseController extends JDialog {
         gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         contentPane.setLayout(gbl_contentPane);
 
-
-        /*
-		currentCheck = new JCheckBox("поточні");
-		currentCheck.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-
-					refreshTable();
-
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		currentCheck.setSelected(true);
-		currentCheck.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_currentCheck = new GridBagConstraints();
-		gbc_currentCheck.anchor = GridBagConstraints.WEST;
-		gbc_currentCheck.insets = new Insets(0, 0, 5, 5);
-		gbc_currentCheck.gridx = 1;
-		gbc_currentCheck.gridy = 1;
-		contentPane.add(currentCheck, gbc_currentCheck);
-
-		paidCheck = new JCheckBox("виплачені");
+		paidCheck = new JCheckBox(Strings.SALES_LICENSE_HIDE_PAID_CHECKBOX);
 		paidCheck.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					refreshTable();
+				    hideCheck = !(hideCheck);
+					refreshTable(null, hideCheck);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -107,27 +85,107 @@ public class SalesLicenseController extends JDialog {
 		GridBagConstraints gbc_paidCheck = new GridBagConstraints();
 		gbc_paidCheck.insets = new Insets(0, 0, 5, 5);
 		gbc_paidCheck.anchor = GridBagConstraints.WEST;
-		gbc_paidCheck.gridx = 2;
+		gbc_paidCheck.gridx = 5;
 		gbc_paidCheck.gridy = 1;
 		contentPane.add(paidCheck, gbc_paidCheck);
-		*/
 
-        JButton editButton = new JButton("ЗМІНИТИ");
+
+        deleteButton = new JButton(Strings.SALES_LICENSE_DELETE);
+        deleteButton.setFont(new Font("Tahoma", Font.BOLD, 9));
+        GridBagConstraints gbc_deleteButton = new GridBagConstraints();
+        gbc_deleteButton.insets = new Insets(0, 0, 5, 5);
+        gbc_deleteButton.gridx = 6;
+        gbc_deleteButton.gridy = 1;
+        deleteButton.setEnabled(false);
+
+        deleteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    Application.self.saleService.removeSale(selectedId);
+                    refreshTable(null, hideCheck);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        contentPane.add(deleteButton, gbc_deleteButton);
+
+        editButton = new JButton(Strings.SALES_LICENSE_EDIT);
         editButton.setFont(new Font("Tahoma", Font.BOLD, 9));
         GridBagConstraints gbc_editButton = new GridBagConstraints();
         gbc_editButton.insets = new Insets(0, 0, 5, 5);
         gbc_editButton.gridx = 7;
         gbc_editButton.gridy = 1;
         editButton.setEnabled(false);
+
+        editButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                //System.out.println("   ----- ID: " + selectedId + " ----- \n");
+
+                try {
+                    License license = null;
+                    license = (License)Application.self.saleRepository.getById(selectedId);
+
+                    int maxMonthRemove = -(Application.self.saleService.getMonthsLeft(license)-1);
+
+                    JTextField clientName = new JTextField(license.getClient());
+                    JSpinner updateDuration = new JSpinner(new SpinnerNumberModel(0, maxMonthRemove, 12, 1));
+
+                    Object[] message = {
+                            new JLabel(Strings.SALES_LICENSE_EDIT_ALBUM + license.getAlbum().toString()),
+                            new JLabel(Strings.SALES_LICENSE_EDIT_PURCHASED + license.getDate().toString()),
+                            new JLabel(Strings.SALES_LICENSE_EDIT_CLIENT_NAME), clientName,
+                            new JLabel(Strings.SALES_LICENSE_EDIT_CHANGE_DURATION), updateDuration
+
+                    };
+                    int option = JOptionPane.showConfirmDialog(null, message, "Edit license", JOptionPane.OK_CANCEL_OPTION);
+                    if (option == JOptionPane.OK_OPTION) {
+                        String newClient = license.getClient();
+                        int newPeriod = license.getPeriod();
+                        int updateChange = 0;
+                        if(!clientName.toString().isEmpty()) {
+                            newClient = clientName.getText();
+                        }
+                        try {
+                            updateChange = Integer.parseInt(updateDuration.getValue().toString());
+                        } catch (NumberFormatException e) {
+                            updateDuration.setValue(0);
+                            updateChange = 0;
+                        }
+
+                        if (updateChange < maxMonthRemove) {
+                            updateChange = 0;
+                        }
+                        if (updateChange > 12) {
+                            updateChange = 0;
+                        }
+
+                        newPeriod += updateChange;
+
+                        license.setClient(newClient);
+                        license.setPeriod(newPeriod);
+
+                        Application.self.saleService.updateSale(license);
+                        refreshTable((Album)albumBox.getSelectedItem(), hideCheck);
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
         contentPane.add(editButton, gbc_editButton);
 
-        JLabel lblP = new JLabel("Альбом :");
+        JLabel lblP = new JLabel(Strings.FIELD_ALBUM_LABEL);
         lblP.setFont(new Font("Tahoma", Font.PLAIN, 12));
         GridBagConstraints gbc_lblP = new GridBagConstraints();
         gbc_lblP.anchor = GridBagConstraints.EAST;
         gbc_lblP.insets = new Insets(0, 0, 5, 5);
         gbc_lblP.gridx = 1;
-        gbc_lblP.gridy = 2;
+        gbc_lblP.gridy = 1;
         contentPane.add(lblP, gbc_lblP);
 
         albumBox = new JComboBox();
@@ -143,11 +201,11 @@ public class SalesLicenseController extends JDialog {
         gbc_albumBox.insets = new Insets(0, 0, 5, 5);
         gbc_albumBox.fill = GridBagConstraints.HORIZONTAL;
         gbc_albumBox.gridx = 2;
-        gbc_albumBox.gridy = 2;
+        gbc_albumBox.gridy = 1;
         albumBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    refreshTable((Album)albumBox.getSelectedItem());
+                    refreshTable((Album)albumBox.getSelectedItem(), hideCheck);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -186,14 +244,14 @@ public class SalesLicenseController extends JDialog {
 
         table = new JTable();
         scrollPane.setViewportView(table);
-        LicenseTableModel model = null;
+        SalesLicenseTableModel model = null;
         try {
-            model = new LicenseTableModel();
+            model = new SalesLicenseTableModel(hideCheck);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        JLabel newLabel = new JLabel("Нова ліцензія");
+        JLabel newLabel = new JLabel(Strings.SALES_LICENSE_NEW);
         newLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
         GridBagConstraints gbc_newLabel = new GridBagConstraints();
         gbc_newLabel.insets = new Insets(0, 0, 5, 5);
@@ -217,7 +275,7 @@ public class SalesLicenseController extends JDialog {
         gbl_newPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         newPanel.setLayout(gbl_newPanel);
 
-        JLabel newAlbumLabel = new JLabel("Альбом :");
+        JLabel newAlbumLabel = new JLabel(Strings.FIELD_ALBUM_LABEL);
         GridBagConstraints gbc_newAlbumLabel = new GridBagConstraints();
         gbc_newAlbumLabel.insets = new Insets(0, 0, 5, 5);
         gbc_newAlbumLabel.anchor = GridBagConstraints.EAST;
@@ -260,7 +318,7 @@ public class SalesLicenseController extends JDialog {
         newPanel.add(newSelectBtn, gbc_newSelectBtn);
         */
 
-        JLabel newClient = new JLabel("Покупець :");
+        JLabel newClient = new JLabel(Strings.SALES_NEW_LABEL_CLIENT);
         GridBagConstraints gbc_newClient = new GridBagConstraints();
         gbc_newClient.anchor = GridBagConstraints.EAST;
         gbc_newClient.insets = new Insets(0, 0, 5, 5);
@@ -287,7 +345,7 @@ public class SalesLicenseController extends JDialog {
         gbc_clientError.gridy = 2;
         newPanel.add(clientError, gbc_clientError);
 
-        JLabel newPeriodLabel = new JLabel("Місяців :");
+        JLabel newPeriodLabel = new JLabel(Strings.SALES_NEW_LABEL_MONTHS);
         GridBagConstraints gbc_newPeriodLabel = new GridBagConstraints();
         gbc_newPeriodLabel.anchor = GridBagConstraints.EAST;
         gbc_newPeriodLabel.insets = new Insets(0, 0, 5, 5);
@@ -314,7 +372,7 @@ public class SalesLicenseController extends JDialog {
         gbc_monthError.gridy = 3;
         newPanel.add(monthError, gbc_monthError);
 
-        JLabel newPriceLabel = new JLabel("Ціна/міс :");
+        JLabel newPriceLabel = new JLabel(Strings.SALES_LICENSE_MONTHLY_PAYM);
         GridBagConstraints gbc_newPriceLabel = new GridBagConstraints();
         gbc_newPriceLabel.anchor = GridBagConstraints.EAST;
         gbc_newPriceLabel.insets = new Insets(0, 0, 5, 5);
@@ -332,11 +390,12 @@ public class SalesLicenseController extends JDialog {
         newPanel.add(newPriceField, gbc_newPriceField);
         newPriceField.setColumns(10);
 
-        JButton newButton = new JButton("Створити");
+        JButton newButton = new JButton(Strings.SALES_LICENSE_CREATE);
         newButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                if(((String)newClientField.getText()).isEmpty())
+                if(((String)newClientField.getText()).isEmpty()) {
                     clientError.setVisible(true);
+                }
                 else {
                     try {
                         License li = new License(new java.sql.Date(Calendar.getInstance().getTime().getTime()),
@@ -346,7 +405,7 @@ public class SalesLicenseController extends JDialog {
                                 ((int) newPeriodSpinner.getValue()));
                         Application.self.saleService.newLicenseSale(li);
                         //model.addRow(saleSer.getLicenseRow(li).toArray());
-                        refreshTable(null);
+                        refreshTable(null, hideCheck);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -368,13 +427,13 @@ public class SalesLicenseController extends JDialog {
         gbc_newButton.gridy = 6;
         newPanel.add(newButton, gbc_newButton);
 
-        JButton exitBtn = new JButton("Вихід");
+        JButton exitBtn = new JButton(Strings.SALES_LICENSE_CLOSE);
         exitBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 dispose();
             }
         });
-        exitBtn.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        exitBtn.setFont(new Font("Tahoma", Font.BOLD, 12));
         GridBagConstraints gbc_exitBtn = new GridBagConstraints();
         gbc_exitBtn.insets = new Insets(0, 0, 0, 5);
         gbc_exitBtn.gridx = 7;
@@ -386,19 +445,32 @@ public class SalesLicenseController extends JDialog {
 		table.getSelectionModel().addListSelectionListener((new ListSelectionListener(){
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
-				try {
-					int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-					License li = (License) Application.self.saleService.getById(id);
-					if (!li.isPaid()) {
-						editButton.setEnabled(true);
-					}
-					else {
-						editButton.setEnabled(false);
-					}
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+			    if (!changeUnderway) {
+                    try {
+                        selectedId = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
+                        License li = (License) Application.self.saleService.getById(selectedId);
+
+                        //Check if paid for EDIT button
+                        if (!li.isPaid()) {
+                            editButton.setEnabled(true);
+                        }
+                        else {
+                            editButton.setEnabled(false);
+                        }
+
+                        //Check if paid for DELETE button
+                        if (Application.self.saleService.getSaleRevenue((Sale)li).compareTo(new BigDecimal(0)) == 0) {
+                            deleteButton.setEnabled(true);
+                        }
+                        else {
+                            deleteButton.setEnabled(false);
+                        }
+
+                    }
+                    catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
 			}
 	    }));
 
@@ -406,7 +478,8 @@ public class SalesLicenseController extends JDialog {
         clientError.setVisible(false);
         priceError.setVisible(false);
         monthError.setVisible(false);
-        editButton.setVisible(false);
+        //editButton.setVisible(false);
+
         //refreshTable();
         //table.setVisible(true);
     }
@@ -421,14 +494,20 @@ public class SalesLicenseController extends JDialog {
         */
     }
 
-    private void refreshTable(Album album) throws SQLException {
+    public void refreshTable(Album album, boolean hide) throws SQLException {
         //if (currentCheck.isSelected() && paidCheck.isSelected())
+        changeUnderway = true;
+        table.clearSelection();
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
         if (album == null)
-            table.setModel(new LicenseTableModel());
+            table.setModel(new SalesLicenseTableModel(hide));
         else
-            table.setModel(new LicenseTableModel(null, album));
+            table.setModel(new SalesLicenseTableModel(album, hide));
+        changeUnderway = false;
+        Application.self.salesNewController.refresh();
         //else if (!currentCheck.isSelected() && !paidCheck.isSelected())
-        //	table.setModel(new LicenseTableModel(saleSer));
+        //	table.setModel(new SalesLicenseTableModel(saleSer));
     }
 
 }

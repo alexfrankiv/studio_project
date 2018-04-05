@@ -2,10 +2,7 @@ package app;
 
 import repository.*;
 import repository.impl.*;
-import service.IAlbumService;
-import service.IMusicianService;
-import service.IMusicianSongService;
-import service.ISongService;
+import service.*;
 import service.impl.*;
 import view_controller.*;
 import view_controller.SalesViewController;
@@ -29,7 +26,7 @@ public class Application {
     // MARK: services
     public final IMusicianService musicianService = new MusicianService();
     public final IAlbumService albumService = new AlbumService();
-    public final SaleService saleService = new SaleService(); // !!! make an interface !!!
+    public final ISaleService saleService = new SaleService();
     public final ISongService songService = new SongService();
     public final IMusicianSongService musicianSongService = new MusicianSongService();
 

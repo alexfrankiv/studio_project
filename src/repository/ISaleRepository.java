@@ -13,6 +13,7 @@ public interface ISaleRepository {
 	boolean update(Sale sale) throws SQLException;
     List<Sale> getAll() throws SQLException;
     List<Sale> getLicenses() throws SQLException;
+    List<Sale> getOngoingLicenses() throws SQLException;
     List<Sale> getRecords() throws SQLException;
     Sale getById(int id) throws SQLException;
 

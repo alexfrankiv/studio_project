@@ -10,23 +10,21 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-public class LicenseTableModel extends AbstractTableModel {
+public class SalesLicenseTableModel extends AbstractTableModel {
     public enum Filter {
         EMPTY, CURRENT, FINISHED
     }
     private ArrayList data;
 
-    LicenseTableModel() throws SQLException {
-        ArrayList arr = (ArrayList) Application.self.saleService.getLicenseData();
+    SalesLicenseTableModel(boolean hide) throws SQLException {
+        ArrayList arr = (ArrayList) Application.self.saleService.getLicenseData(hide);
         arr.trimToSize();
         data = arr;
     }
 
-    LicenseTableModel(String type, Album album) throws SQLException {//, Date from, Date till) throws SQLException, ParseException {
-        ArrayList arr = (ArrayList) Application.self.saleService.getLicenseData();
+    SalesLicenseTableModel(Album album, boolean hide) throws SQLException {//, Date from, Date till) throws SQLException, ParseException {
+        ArrayList arr = (ArrayList) Application.self.saleService.getLicenseData(hide);
         arr.trimToSize();
-        if (type != null)
-            arr = (ArrayList) Application.self.saleService.filterByType(type, arr);
         if (album != null) {
             arr = (ArrayList) Application.self.saleService.filterByAlbum(album, arr);
         }

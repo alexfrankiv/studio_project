@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -20,7 +19,6 @@ import javax.swing.event.ChangeListener;
 import app.Application;
 import app.Strings;
 import model.*;
-import model.dto.MusicianSong;
 
 public class SalesNewController {
 
@@ -38,6 +36,7 @@ public class SalesNewController {
     private JComboBox albumBox;
     private JComboBox newAlbumBox;
     private JComboBox operationBox;
+    private JButton confirmButton;
 
 
     public SalesNewController() {
@@ -100,7 +99,7 @@ public class SalesNewController {
         panel.add(selectButton, gbc_selectButton);
         */
 
-        JLabel clientLabel = new JLabel(Strings.NEW_LABEL_CLIENT);
+        JLabel clientLabel = new JLabel(Strings.SALES_NEW_LABEL_CLIENT);
         GridBagConstraints gbc_clientLabel = new GridBagConstraints();
         gbc_clientLabel.anchor = GridBagConstraints.EAST;
         gbc_clientLabel.insets = new Insets(0, 0, 5, 5);
@@ -157,7 +156,7 @@ public class SalesNewController {
             }
         });
 
-        JLabel mutableLabel = new JLabel(Strings.NEW_LABEL_QTY);
+        JLabel mutableLabel = new JLabel(Strings.SALES_NEW_LABEL_QTY);
         GridBagConstraints gbc_mutableLabel = new GridBagConstraints();
         gbc_mutableLabel.anchor = GridBagConstraints.EAST;
         gbc_mutableLabel.insets = new Insets(0, 0, 5, 5);
@@ -182,7 +181,7 @@ public class SalesNewController {
         gbc_licenseSelectBox.gridy = 5;
 
         try {
-            Application.self.saleRepository.getLicenses().forEach(i -> licenseSelectBox.addItem(i));
+            Application.self.saleRepository.getOngoingLicenses().forEach(i -> licenseSelectBox.addItem(i));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -199,7 +198,7 @@ public class SalesNewController {
 
         licenseSelectBox.setVisible(false);
 
-        JLabel licenseSelectLabel = new JLabel(Strings.NEW_LABEL_LICENSE);
+        JLabel licenseSelectLabel = new JLabel(Strings.SALES_NEW_LABEL_LICENSE);
         GridBagConstraints gbc_licenseSelectLabel = new GridBagConstraints();
         gbc_licenseSelectLabel.insets = new Insets(0, 0, 5, 5);
         gbc_licenseSelectLabel.anchor = GridBagConstraints.EAST;
@@ -208,7 +207,7 @@ public class SalesNewController {
         panel.add(licenseSelectLabel, gbc_licenseSelectLabel);
         panel.add(licenseSelectBox, gbc_licenseSelectBox);
 
-        JLabel priceLabel = new JLabel(Strings.NEW_LABEL_COST);
+        JLabel priceLabel = new JLabel(Strings.SALES_NEW_LABEL_COST);
         GridBagConstraints gbc_priceLabel = new GridBagConstraints();
         gbc_priceLabel.anchor = GridBagConstraints.EAST;
         gbc_priceLabel.insets = new Insets(0, 0, 5, 5);
@@ -230,7 +229,7 @@ public class SalesNewController {
         recordRadio = new JRadioButton(Strings.OPERATION_OPTION_RECORD_PURCHASE);
         recordRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                mutableLabel.setText(Strings.NEW_LABEL_QTY);
+                mutableLabel.setText(Strings.SALES_NEW_LABEL_QTY);
                 //priceLabel.setText("Сума :");
                 sumField.setEditable(false);
                 licenseSelectBox.setVisible(false);
@@ -261,7 +260,7 @@ public class SalesNewController {
         JRadioButton paymentRadio = new JRadioButton(Strings.OPERATION_OPTION_MONTHLY_PAYMENT);
         paymentRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                mutableLabel.setText(Strings.NEW_LABEL_MONTHS);
+                mutableLabel.setText(Strings.SALES_NEW_LABEL_MONTHS);
                 //priceLabel.setText("За місяць :");
                 sumField.setEditable(true);
                 licenseSelectBox.setVisible(true);
@@ -291,11 +290,13 @@ public class SalesNewController {
         group.add(recordRadio);
         group.add(paymentRadio);
 
-        JButton confirmButton = new JButton(Strings.NEW_BTN_CONFIRM);
+        confirmButton = new JButton(Strings.SALES_NEW_BTN_CONFIRM);
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    initializeConfirmation("YAAS!");
+                    initializeConfirmation(Strings.SALES_NEW_CONFIRMATION_MESSAGE);
+                    refresh();
+
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -331,7 +332,7 @@ public class SalesNewController {
     }
 
     private void initializeConfirmation(String message) throws SQLException {
-        int option = JOptionPane.showConfirmDialog(null, message, Strings.DIALOG_ADD_MUSICIAN, JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, message, Strings.SALES_NEW_CONFIRMATION_TITLE, JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             Sale sale = null;
             java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
@@ -345,12 +346,28 @@ public class SalesNewController {
             }
             else {
                 Calendar now = Calendar.getInstance();
-                lp = new LicensePayment(date, new BigDecimal(sumField.getText()),
-                        ((License)licenseSelectBox.getSelectedItem()).getId(),
-                        (now.get(Calendar.MONTH) + 1), now.get(Calendar.YEAR));
+                License selected = (License)licenseSelectBox.getSelectedItem();
+                int[] payMonth = Application.self.saleService.getCurrentPayMonth(selected);
+                BigDecimal totalPreliminary = new BigDecimal(sumField.getText());
+                BigDecimal remainder = selected.getSum().subtract(Application.self.saleService.getSaleRevenue(selected));
+                BigDecimal total = null;
+                boolean finalPayment = false;
+                if (totalPreliminary.compareTo(remainder) < 0) {
+                    total = totalPreliminary;
+                }
+                else {
+                    total = remainder;
+                    finalPayment = true;
+                }
+                lp = new LicensePayment(date,
+                        total,
+                        selected.getId(),
+                        payMonth[0], payMonth[1]
+                );
 
-                Application.self.saleService.newLicensePayment((LicensePayment)lp);
+                Application.self.saleService.newLicensePayment((LicensePayment)lp, finalPayment);
             }
+
             Application.self.saleService.resetRes();
         }
 
@@ -362,13 +379,26 @@ public class SalesNewController {
         BigDecimal amount = new BigDecimal((int) qty.getValue());
         if (recordRadio.isSelected()) {
             //System.out.println("HHHH");
+            sumField.setEnabled(true);
+            confirmButton.setEnabled(true);
             sumField.setText(albumPrice.multiply(amount) + "");
         }
-        else
-            sumField.setText(
-                    ((License)licenseSelectBox.getSelectedItem()).getPrice()
-                    //((License)saleSer.getById(saleSer.getLicenseIdByInfo(licenseSelectBox.getSelectedItem().toString()))).getPrice()
-                    + "");
+        else {
+            if (licenseSelectBox.getSelectedItem() != null) {
+                sumField.setEnabled(true);
+                confirmButton.setEnabled(true);
+                sumField.setText(
+                        ((License)licenseSelectBox.getSelectedItem()).getPrice()
+                                //((License)saleSer.getById(saleSer.getLicenseIdByInfo(licenseSelectBox.getSelectedItem().toString()))).getPrice()
+                                + "");
+            }
+            else {
+                sumField.setText("0.00");
+                sumField.setEnabled(false);
+                confirmButton.setEnabled(false);
+            }
+
+        }
     }
 
     public JRadioButton getRecordRadio() {
@@ -385,6 +415,16 @@ public class SalesNewController {
 
     public JPanel getContentView() {
         return panel;
+    }
+
+    public void refresh() {
+        licenseSelectBox.removeAllItems();
+        try {
+            Application.self.saleRepository.getOngoingLicenses().forEach(i -> licenseSelectBox.addItem(i));
+            calculatePrice();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
