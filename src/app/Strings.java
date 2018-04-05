@@ -26,13 +26,8 @@ public class Strings {
 //    public static final String MENU_ALBUM_EDIT_CURRENT = "Edit current...";
 //    public static final String MENU_ALBUM_EDIT_CURRENT = "Edit current...";
     ///////
-    public static final String MENU_MUSICIAN = "Musiciant";
-    public static final String MENU_MUSICIAN_VIEW = "View musiciant";
-
-
-    ///////
-
-
+    public static final String MENU_MUSICIAN = "Musician";
+    public static final String MENU_MUSICIAN_VIEW = "View musicians";
 
     public static final String MENU_HELP = "Help";
     public static final String MENU_HELP_DOCS = "Documentation";
@@ -50,7 +45,7 @@ public class Strings {
 
     public static final String MENU_SONG_VIEW = "View songs";
     public static final String MENU_SONG = "Song";
-    public static final String MENU_SONG_EDIT = "Edit";
+    public static final String MENU_SONG_EDIT = "Edit...";
     public static final String MENU_SONG_NEW = "New...";
 
 
@@ -70,8 +65,8 @@ public class Strings {
     public static final String INSERTED_SONG = "Song is added";
 
     ////////
-    public static final String SELECT_MUSICIANT_BUTTON = "Select";
-    public static final String FIELD_MUSICIANT_LABEL = "Album:";
+    public static final String SELECT_MUSICIAN_BUTTON = "Select";
+    public static final String FIELD_MUSICIAN_LABEL = "Album:";
     //////
 
     public static final String SELECT_ALBUM_BUTTON = "Select";
