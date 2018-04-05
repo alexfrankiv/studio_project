@@ -39,6 +39,11 @@ public class Application {
     public SalesViewController salesViewController;
     public SalesNewController salesNewController;
     public SalesLicenseController salesLicenseController;
+    public MusicianViewController musicianViewController;
+
+    ///////////////////////////////////////
+
+    ///////////////////////////////////////
 
 
     // MARK: general behaviour
