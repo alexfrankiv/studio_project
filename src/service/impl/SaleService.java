@@ -7,6 +7,7 @@ import model.dto.PreparedRevenue;
 import service.ISaleService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,13 +39,14 @@ public class SaleService implements ISaleService {
 	}
 
 	@Override
-	public void newRecordSale(Record rec) throws SQLException {
+	public List<PreparedRevenue> newRecordSale(Record rec) throws SQLException {
 		int recId = Application.self.saleRepository.add(rec);
 		RecordCost rc = new RecordCost( rec, recId, Application.self.albumPriceRepository.getLastPriceFor(rec.getAlbum()));
 		Application.self.flowRepository.add(rc);
 		List<PreparedRevenue> pr = Application.self.flowRepository.getAlbumRevenues(rc, (int) rec.getAlbumId());
 		for (PreparedRevenue i : pr)
 			Application.self.flowRepository.addRevenue(i);
+		return (pr);
 	}
 
 	@Override
@@ -53,17 +55,41 @@ public class SaleService implements ISaleService {
 	}
 
 	@Override
-	public void newLicensePayment(LicensePayment lp, boolean finalPayment) throws SQLException {
-		Application.self.flowRepository.add(lp);
+	public List<PreparedRevenue> newLicensePayment(LicensePayment lp, boolean finalPayment) throws SQLException {
+		int lpId = Application.self.flowRepository.add(lp);
 		//Add all revenues
+		lp.setId(lpId);
 		List<PreparedRevenue> pr = Application.self.flowRepository.getAlbumRevenues(lp, (int) lp.getSale().getAlbumId());
-		for (PreparedRevenue i : pr)
-			Application.self.flowRepository.addRevenue(i);
-
+		//for (PreparedRevenue i : pr) Application.self.flowRepository.addRevenue(i);
 		//Check finality
 		License li = (License)lp.getSale();
 		li.setPaid(finalPayment);
 		updateSale(li);
+		return (pr);
+	}
+
+	@Override
+	public void addLicenseRevenue(List<PreparedRevenue> pr) throws SQLException {
+		for (PreparedRevenue i : pr) {
+			Application.self.flowRepository.addRevenue(i);
+		}
+	}
+
+	@Override
+	public String licenseRevenuesAsString(List<PreparedRevenue> prep) {
+		StringBuilder sb = new StringBuilder();
+		int i = 1;
+		prep.sort((o1, o2) -> o2.getPercent().compareTo(o1.getPercent()));
+		for (PreparedRevenue r : prep) {
+			BigDecimal moneyShare = ( r.getRevenue().getTotal().multiply(r.getPercent()) ).setScale(2, RoundingMode.DOWN);
+			BigDecimal percentShare = ( r.getPercent().multiply(new BigDecimal(100)) ).setScale(2, RoundingMode.DOWN);
+
+			sb.append("\n    " + i + ". " + Application.self.musicianService.getBy(r.getRevenue().getMusicianID()).toString());
+			sb.append(" - " + moneyShare.toString() + " UAH (" + percentShare.toString() + "%)");
+			i++;
+		}
+		sb.append('\n');
+		return sb.toString();
 	}
 
 	@Override
@@ -211,7 +237,7 @@ public class SaleService implements ISaleService {
 	public int[] getCurrentPayMonth(License license) throws SQLException {
 		if (!license.isPaid()) {
 			BigDecimal revenue = getSaleRevenue(license);
-			int soFar = (revenue.divide(license.getPrice())).intValue();
+			int soFar = (revenue.divide(license.getPrice(), 2, RoundingMode.HALF_UP)).intValue();
 			Calendar c = Calendar.getInstance();
 			c.setTime(license.getDate());
 			c.add(Calendar.MONTH, soFar);
@@ -231,7 +257,7 @@ public class SaleService implements ISaleService {
 	@Override
 	public int getMonthsLeft(License license) throws SQLException {
 		if (!license.isPaid()) {
-			return (license.getPeriod()-(getSaleRevenue(license).divide(license.getPrice())).intValue());
+			return (license.getPeriod()-(getSaleRevenue(license).divide(license.getPrice(), 2, RoundingMode.DOWN)).intValue());
 		}
 		return 0;
 	}

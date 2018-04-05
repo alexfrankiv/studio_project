@@ -8,8 +8,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,6 +24,7 @@ import javax.swing.event.ChangeListener;
 import app.Application;
 import app.Strings;
 import model.*;
+import model.dto.PreparedRevenue;
 
 public class SalesNewController {
 
@@ -294,7 +300,7 @@ public class SalesNewController {
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    initializeConfirmation(Strings.SALES_NEW_CONFIRMATION_MESSAGE);
+                    initializeConfirmation();
                     refresh();
 
                 } catch (SQLException e) {
@@ -331,44 +337,86 @@ public class SalesNewController {
         */
     }
 
-    private void initializeConfirmation(String message) throws SQLException {
-        int option = JOptionPane.showConfirmDialog(null, message, Strings.SALES_NEW_CONFIRMATION_TITLE, JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            Sale sale = null;
-            java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-            if (recordRadio.isSelected()) {
-                rec = new Record(date, clientField.getText(),
-                        ((Album)albumBox.getSelectedItem()).getId(),
-                        (int) qty.getValue()
-                );
-                Application.self.saleService.newRecordSale((Record)rec);
+    private void initializeConfirmation() throws SQLException {
+        //If LICENSE
+        Sale sale = null;
+        java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        Calendar now = Calendar.getInstance();
+        License selected = null;
+        int[] payMonth = null;
+        BigDecimal totalPreliminary = null;
+        BigDecimal remainder = null;
+        BigDecimal total = null;
+        boolean finalPayment = false;
+        List<PreparedRevenue> pr = null;
+        String revenues = "";
 
+        if (recordRadio.isSelected()) {
+            rec = new Record(date, clientField.getText(),
+                    ((Album)albumBox.getSelectedItem()).getId(),
+                    (int) qty.getValue()
+            );
+
+            pr = Application.self.saleService.newRecordSale((Record)rec);
+            revenues = Application.self.saleService.licenseRevenuesAsString(pr);
+
+        }
+        else {
+            selected = (License)licenseSelectBox.getSelectedItem();
+            payMonth = Application.self.saleService.getCurrentPayMonth(selected);
+            totalPreliminary = new BigDecimal(sumField.getText());
+            remainder = selected.getSum().subtract(Application.self.saleService.getSaleRevenue(selected));
+            if (totalPreliminary.compareTo(remainder) < 0) {
+                total = totalPreliminary;
             }
             else {
-                Calendar now = Calendar.getInstance();
-                License selected = (License)licenseSelectBox.getSelectedItem();
-                int[] payMonth = Application.self.saleService.getCurrentPayMonth(selected);
-                BigDecimal totalPreliminary = new BigDecimal(sumField.getText());
-                BigDecimal remainder = selected.getSum().subtract(Application.self.saleService.getSaleRevenue(selected));
-                BigDecimal total = null;
-                boolean finalPayment = false;
-                if (totalPreliminary.compareTo(remainder) < 0) {
-                    total = totalPreliminary;
-                }
-                else {
-                    total = remainder;
-                    finalPayment = true;
-                }
-                lp = new LicensePayment(date,
-                        total,
-                        selected.getId(),
-                        payMonth[0], payMonth[1]
-                );
-
-                Application.self.saleService.newLicensePayment((LicensePayment)lp, finalPayment);
+                total = remainder;
+                finalPayment = true;
             }
+            lp = new LicensePayment(date,
+                    total,
+                    selected.getId(),
+                    payMonth[0], payMonth[1]
+            );
 
+            pr = Application.self.saleService.newLicensePayment((LicensePayment)lp, finalPayment);
+            revenues = Application.self.saleService.licenseRevenuesAsString(pr);
+        }
+
+        //Display CONFIRMATION MESSAGE
+        String  message = "";
+
+        if (recordRadio.isSelected()) {
+            message = String.format(Strings.SALES_NEW_CONFIRMATION_MESSAGE_RECORD,
+                    rec.getAlbum().toString(), rec.getAlbum().getId(), rec.getAlbum().getCurrentPrice().toString(),
+                    ((Record)pr.get(0).getRevenue().getSale()).getQty(), pr.get(0).getRevenue().getTotal(),
+                    rec.getClient(), now.getTime().toString());
+        }
+        else {
+            message = String.format(Strings.SALES_NEW_CONFIRMATION_MESSAGE_LICENSE,
+                    lp.getSale().getId(), lp.getSale().getAlbum().toString(),
+                    ((License)lp.getSale()).getExpiry(),
+                    lp.getSale().getClient(), pr.get(0).getRevenue().getTotal(),
+                    Strings.MONTHS.get(((LicensePayment)lp).getMonth()), (finalPayment ? "fully paid" : "partially paid"),
+                    now.getTime().toString());
+        }
+
+        message += revenues;
+
+        int option = JOptionPane.showConfirmDialog(null, message, Strings.SALES_NEW_CONFIRMATION_TITLE, JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
             Application.self.saleService.resetRes();
+            if (!recordRadio.isSelected()) {
+                Application.self.saleService.addLicenseRevenue(pr);
+            }
+        }
+        else {
+            if (recordRadio.isSelected()) {
+                Application.self.saleService.removeSale(pr.get(0).getRevenue().getSale());
+            }
+            else {
+                Application.self.flowRepository.remove(lp);
+            }
         }
 
     }

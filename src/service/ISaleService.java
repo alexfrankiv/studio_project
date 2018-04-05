@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import model.dto.PreparedRevenue;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -15,9 +16,11 @@ public interface ISaleService {
     boolean updateSale(Sale sale) throws SQLException;
     boolean removeSale(Sale sale) throws SQLException;
     boolean removeSale(int id) throws SQLException;
-    void newRecordSale(Record rec) throws SQLException;
+    List<PreparedRevenue> newRecordSale(Record rec) throws SQLException;
     void newLicenseSale(License l) throws SQLException;
-    void newLicensePayment(LicensePayment lp, boolean finalPayment) throws SQLException;
+    List<PreparedRevenue> newLicensePayment(LicensePayment lp, boolean finalPayment) throws SQLException;
+    void addLicenseRevenue(List<PreparedRevenue> pr) throws SQLException;
+    String licenseRevenuesAsString(List<PreparedRevenue> prep);
     String getLicenseInfo(License l) throws SQLException;
     int getLicenseIdByInfo(String info);
     List<Sale> getLicenses() throws SQLException;

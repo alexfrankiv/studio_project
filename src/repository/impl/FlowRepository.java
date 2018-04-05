@@ -1,10 +1,7 @@
 package repository.impl;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +16,13 @@ import repository.IFlowRepository;
 public class FlowRepository implements IFlowRepository {
 
 	@Override
-	public boolean add(Flow flow) throws SQLException {
+	public int add(Flow flow) throws SQLException {
 		Connection c = DBConnector.shared.getConnect();
         PreparedStatement s = null;
         ResultSet rs;
 		switch (flow.getType()) {
 		case LICENSE_PAYMENT:
-			s = c.prepareStatement(addLPayment);
+			s = c.prepareStatement(addLPayment, Statement.RETURN_GENERATED_KEYS);
 			//date, total, sale_id, year, month, type
 			s.setDate(1,flow.getDate());
 			s.setBigDecimal(2, flow.getTotal());
@@ -35,7 +32,7 @@ public class FlowRepository implements IFlowRepository {
 			s.setInt(6, (Flow.FlowType.LICENSE_PAYMENT).getValue());
 			break;
 		case MUSICIAN_REVENUE:
-			s = c.prepareStatement(addMRevenue);
+			s = c.prepareStatement(addMRevenue, Statement.RETURN_GENERATED_KEYS);
 			//date, total, sale_id, musician_id, type
 			s.setDate(1,flow.getDate());
 			s.setBigDecimal(2, flow.getTotal());
@@ -44,7 +41,7 @@ public class FlowRepository implements IFlowRepository {
 			s.setInt(5, (Flow.FlowType.MUSICIAN_REVENUE).getValue());
 			break;
 		case RECORD_COST:
-			s = c.prepareStatement(addRCost);
+			s = c.prepareStatement(addRCost, Statement.RETURN_GENERATED_KEYS);
 			//date, total, sale_id, type
 			s.setDate(1,flow.getDate());
 			s.setBigDecimal(2, flow.getTotal());
@@ -53,7 +50,12 @@ public class FlowRepository implements IFlowRepository {
 			break;
 		}
 		int success = s.executeUpdate();
-		return (success == 1);
+		if (success != 1) return -1;
+		rs = s.getGeneratedKeys();
+		rs.next();
+		int flow_id = rs.getInt(1);
+		if (success == 1) return flow_id;
+		else return -1;
 	}
 	
 	@Override
@@ -135,7 +137,7 @@ public class FlowRepository implements IFlowRepository {
 	@Override
 	public BigDecimal getSumBySaleId(int saleId) throws SQLException {
 		Connection c = DBConnector.shared.getConnect();
-        PreparedStatement s = c.prepareStatement("SELECT IFNULL(Sum(total),0) AS sum FROM cash_flow WHERE sale_id=?;");
+        PreparedStatement s = c.prepareStatement("SELECT IFNULL(Sum(total),0) AS sum FROM cash_flow WHERE sale_id=? AND NOT(type=3);");
         s.setInt(1, saleId);
         ResultSet rs = s.executeQuery();
         rs.next();

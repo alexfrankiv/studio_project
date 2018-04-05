@@ -74,12 +74,25 @@ public class Strings {
     public static final String SALES_NEW_LABEL_MONTHS = "Months:";
     public static final String SALES_NEW_BTN_CONFIRM = "Confirm";
     public static final String SALES_NEW_CONFIRMATION_TITLE = "Confirm payment";
-    public static final String SALES_NEW_CONFIRMATION_MESSAGE = "Please check all the details " +
-            "and click 'OK' to complete the payment:\n" +
-            "0\n" +
-            "1\n" +
-            "2\n" +
-            "3";
+    public static final String SALES_NEW_CONFIRMATION_PLEASE_CHECK = "Please check all the details and click 'OK' to complete the payment:\n";
+    public static final String SALES_NEW_CONFIRMATION_REVENUES = "\nThe artists are going to receive the following revenues:";
+    public static final String SALES_NEW_CONFIRMATION_MESSAGE_RECORD = SALES_NEW_CONFIRMATION_PLEASE_CHECK +
+            "\n----------- RECORD PURCHASE ----------- \n" +
+            "Album's title: '%s' (#%s)\n" +
+            "Price: %s UAH  Quantity: %s \n" +
+            "Total: %s UAH \n" +
+            "Client's name: %s \n\n" +
+            "%s \n" +
+            SALES_NEW_CONFIRMATION_REVENUES;
+    public static final String SALES_NEW_CONFIRMATION_MESSAGE_LICENSE = SALES_NEW_CONFIRMATION_PLEASE_CHECK +
+            "\n----------- LICENSE PAYMENT ----------- \n" +
+            "License #%s (album '%s', expires %s)\n" +
+            "Client's name: %s \n" +
+            "Total: %s UAH \n" +
+            "Accrued for: %s \n" +
+            "Expected status: %s \n\n" +
+            "%s \n" +
+            SALES_NEW_CONFIRMATION_REVENUES;
     public static final String SALES_LICENSE_TITLE = "Licenses";
     public static final String SALES_LICENSE_HIDE_PAID_CHECKBOX = " hide paid";
     public static final String SALES_LICENSE_NEW = "New license";

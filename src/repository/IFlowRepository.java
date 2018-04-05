@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IFlowRepository {
 	
-	boolean add(Flow flow) throws SQLException;
+	int add(Flow flow) throws SQLException;
 	boolean addRevenue(PreparedRevenue pr) throws SQLException;
     boolean remove(Flow flow) throws SQLException;
     boolean update(Flow flow) throws SQLException;

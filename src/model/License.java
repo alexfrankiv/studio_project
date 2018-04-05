@@ -2,6 +2,7 @@ package model;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Calendar;
 
 public class License extends Sale {
 	private BigDecimal price;
@@ -47,6 +48,14 @@ public class License extends Sale {
 
 	public void setPaid(boolean paid) {
 		this.paid = paid;
+	}
+
+	public String getExpiry() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(this.getDate());
+		c.add(Calendar.MONTH, getPeriod());
+		java.util.Date d = c.getTime();
+		return (c.get(Calendar.DAY_OF_MONTH) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR));
 	}
 
 	@Override
