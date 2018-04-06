@@ -149,6 +149,7 @@ public class MainController {
                 frame.remove(currentWindow);
             }
             currentWindow = Application.self.salesNewController.getContentView();
+            Application.self.salesNewController.setup();
             frame.add(currentWindow);
             currentWindowCode = ScreenCode.SALE;
             update();

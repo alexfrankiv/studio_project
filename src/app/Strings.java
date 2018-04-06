@@ -9,8 +9,8 @@ public class Strings {
     public static final String UNDER_CONSTRUCTION = "OOPS! This part of application is currently under construction...";
     public static final String ABOUT_TEXT = "Studio Managemment System (2018).\n" +
             "\n" +
-            "Version: 0.9 Release\n" +
-            "Build: 20180403-0001\n" +
+            "Version: 1.0 Release\n" +
+            "Build: 20180406-0013\n" +
             "Developed by: Oleksandr FRANKIV, Nazar TKACH,\n" +
             "Anton SHERSTIUK, Artur IVANENKO\n";
 
