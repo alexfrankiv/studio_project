@@ -16,5 +16,5 @@ public interface IMusicianSongRepository {
     boolean insert(MusicianSong musicianSong) throws SQLException;
     double getFee(long mid,long sid) throws  SQLException;
     boolean update(MusicianSong song) throws SQLException;
-
- }
+    boolean remove(MusicianSong song) throws SQLException;
+}

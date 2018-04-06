@@ -29,9 +29,6 @@ public class MusicianSongRepository implements IMusicianSongRepository {
         List<MusicianSong> result = listMusicianSongFrom(ps.executeQuery());
         return result;
 
-
-
-
     }
     private List<MusicianSong> listSongsFrom(ResultSet resultSet) throws SQLException {
         List<MusicianSong> list = new ArrayList<>();
@@ -79,6 +76,17 @@ public class MusicianSongRepository implements IMusicianSongRepository {
         return songCode == Constants.DB_SUCCESS_EXECUTION_CODE;
     }
 
+    @Override
+    public boolean remove(MusicianSong song) throws SQLException {
+        Connection c = DBConnector.shared.getConnect();
+        PreparedStatement ps = c.prepareStatement(remove);
+        ps.setLong(1, song.getMusician_id());
+        ps.setLong(2, song.getSong_id());
+
+        int songCode = ps.executeUpdate();
+        return songCode == Constants.DB_SUCCESS_EXECUTION_CODE;
+    }
+
     private double fee(ResultSet resultSet) throws  SQLException{
         double res=0;
         while(resultSet.next()){
@@ -88,10 +96,11 @@ public class MusicianSongRepository implements IMusicianSongRepository {
 
     }
 
-private final static String Fee = "SELECT fee_share FROM musician_song WHERE musician_id=? AND song_id =?;";
+    private final static String Fee = "SELECT fee_share FROM musician_song WHERE musician_id=? AND song_id =?;";
     private final static String getMusicianShare = "SELECT * FROM musician_song WHERE song_id =?;";
-private final static String insert = "INSERT  INTO musician_song(musician_id,song_id,fee_share) VALUES(?,?,?);";
-   private final  static String update =  "UPDATE musician_song SET fee_share=? WHERE musician_id=? AND song_id=?;";
+    private final static String insert = "INSERT  INTO musician_song(musician_id,song_id,fee_share) VALUES(?,?,?);";
+    private final  static String update =  "UPDATE musician_song SET fee_share=? WHERE musician_id=? AND song_id=?;";
+    private final  static String remove =  "DELETE FROM musician_song WHERE musician_id=? AND song_id=?;";
     private List<MusicianSong> listMusicianSongFrom(ResultSet resultSet) throws SQLException {
         List<MusicianSong> list = new ArrayList<>();
         while (resultSet.next()) {

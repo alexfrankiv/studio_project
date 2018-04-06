@@ -95,9 +95,6 @@ private static final String getById = "SELECT * FROM song WHERE id=?;";
 
         while(resultSet.next()){
             musList.add(musicianFrom(resultSet));
-
-
-
         }
         return musList;
 

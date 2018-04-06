@@ -111,13 +111,13 @@
               <component id="eeda3" class="javax.swing.JLabel">
                 <constraints border-constraint="West"/>
                 <properties>
-                  <text value="Fee:"/>
+                  <text value="Fee share: "/>
                 </properties>
               </component>
               <component id="ed11e" class="javax.swing.JLabel" binding="feeLabel">
                 <constraints border-constraint="Center"/>
                 <properties>
-                  <text value="Label"/>
+                  <text value="0"/>
                 </properties>
               </component>
             </children>

@@ -8,11 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,9 +44,10 @@ public class SalesNewController {
     public SalesNewController() {
         panel = new JPanel();
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setup();
     }
 
-    public void initialize() {
+    public void setup() {
         this.lp = null;
         this.rec = null;
 
@@ -76,6 +73,7 @@ public class SalesNewController {
         gbc_albumBox.fill = GridBagConstraints.HORIZONTAL;
         gbc_albumBox.gridx = 2;
         gbc_albumBox.gridy = 2;
+
 
         try {
             Application.self.albumRepository.all().forEach(i -> albumBox.addItem(i));
@@ -323,6 +321,15 @@ public class SalesNewController {
         licenseSelectLabel.setVisible(false);
         //operationBox.setModel(new DefaultComboBoxModel(new String[] {"-", "покупка записів", "щомісячна плата"}));
 
+        albumBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    calculatePrice();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 

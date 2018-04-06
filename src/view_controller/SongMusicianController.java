@@ -28,17 +28,13 @@ public class SongMusicianController extends JFrame {
     private JButton buttonCancel;
     private List<Musician> dataSource;
     private Musician currentMusician;
-    private long song_id;
+    private Song song;
 
 
-    public SongMusicianController(long id){
-        System.out.println("Id:"+id);
-        this.song_id=id;
-
-    setup();
+    public SongMusicianController(Song song){
+        this.song = song;
+        setup();
     }
-
-    public SongMusicianController(){}
 
     private void setup(){
         setContentPane(contentView);
@@ -65,7 +61,7 @@ public class SongMusicianController extends JFrame {
 
     private void changeShare(ActionEvent e) {
         long mid = currentMusician.getId();
-        long sid = this.song_id;
+        long sid = this.song.getId();
         double prev_share = currentMusician.getRating();
         double share = 0;
         boolean updated = false;
@@ -96,15 +92,17 @@ public class SongMusicianController extends JFrame {
             MusicianSong ms = new MusicianSong(mid, sid, share);
             if (changed) {
                 try {
+                    if (share == 0) {
+                        Application.self.musicianSongRepository.remove(ms);
+                        Application.showMessage(Strings.DIALOG_MUSICIAN_REMOVED_FROM_SONG);
+
+                    }
                     updated = Application.self.musicianSongRepository.update(ms);
                     if (updated) {
                         Application.showMessage(Strings.SHARE_CHANGED);
-                        reloadListData();
-                        repaintDetails();
-
-                    } else {
-
                     }
+                    reloadListData();
+                    repaintDetails();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -119,7 +117,7 @@ public class SongMusicianController extends JFrame {
            // System.out.println("2");
 
 
-            dataSource = Application.self.songRepository.getSongMusicians(this.song_id);
+            dataSource = Application.self.songRepository.getSongMusicians(this.song.getId());
            // System.out.println("3");
         }
         catch(SQLException e){
@@ -147,24 +145,18 @@ public class SongMusicianController extends JFrame {
         int index = musicianList.getSelectedIndex();
         if (index < 0) return;
         currentMusician = dataSource.get(index);
-
         repaintDetails();
-
-
     }
 
 
 
     private void repaintDetails(){
         feeLabel.setText(String.valueOf(currentMusician.getRating()));
-
-
-
     }
 
 
-    public static void presentDialog(long id){
-        SongMusicianController dialog = new SongMusicianController( id);
+    public static void presentDialog(Song song){
+        SongMusicianController dialog = new SongMusicianController(song);
         doPresent(dialog);
     }
     private static void doPresent(SongMusicianController songMusicianController){

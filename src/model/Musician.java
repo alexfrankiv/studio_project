@@ -76,7 +76,7 @@ public class Musician {
 
     //utilities
     public String getFullName() {
-        return name + lastName;
+        return name + " " + lastName;
     }
 
     public static Comparator<Musician> musComparator = new Comparator<Musician>() {

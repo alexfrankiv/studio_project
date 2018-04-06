@@ -32,7 +32,7 @@ public class SongViewController {
 
     private JLabel authorLabel ;
 
-    private JLabel musicianNameLabel ;
+    private JLabel musicianNamesLabel;
     private JLabel musicianLastNameLabel ;
 
     private JButton addMusician;
@@ -60,11 +60,8 @@ public class SongViewController {
     }
 
 
-    public long getCurrentId() {
-        int index = songList.getSelectedIndex();
-        if (index < 0) return -1;
-        currentSong = dataSource.get(index);
-        return currentSong.getId();
+    public Song getCurrentSong() {
+        return ((Song)songList.getSelectedValue());
     }
 
     public void refresh() {
@@ -118,37 +115,40 @@ public class SongViewController {
        List<Musician> mList = new ArrayList<>();
 
        try{
-           mList= Application.self.songService.getSongMusicians(getCurrentId());
+           mList= Application.self.songService.getSongMusicians(getCurrentSong().getId());
        }catch(Exception e){
            e.printStackTrace();
        }
 
-
-       if(mList.size()>0){
-
-       musicianLastNameLabel.setText(mList.get(0).getLastName());
-       musicianNameLabel.setText(mList.get(0).getName());
-       long mus_id = mList.get(0).getId();
-        double fee_share = 0;
+       String allMusicians = "";
         try {
-            fee_share = Application.self.musicianSongRepository.getFee(mus_id,getCurrentId());
+            for (Musician m : Application.self.songRepository.getSongMusicians(currentSong.getId())) {
+                allMusicians += m.getFullName() + "; ";
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-
-        musicianShareLabel.setText(String.valueOf(fee_share));
-
-
-
-
-           }else {
-           musicianLastNameLabel.setText(" - ");
-           musicianNameLabel.setText(" - ");
-           musicianShareLabel.setText(String.valueOf(0));
-
-
+        musicianNamesLabel.setText(allMusicians);
+       /*
+       if(mList.size()>0){
+       musicianLastNameLabel.setText(mList.get(0).getLastName());
+       musicianNamesLabel.setText(mList.get(0).getName());
+       long musId = mList.get(0).getId();
+        double fee_share = 0;
+        try {
+            fee_share = Application.self.musicianSongRepository.getFee(musId, getCurrentSong().getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        musicianShareLabel.setText(String.valueOf(fee_share));
+        }else {
+           musicianLastNameLabel.setText(" - ");
+           musicianNamesLabel.setText(" - ");
+           musicianShareLabel.setText(String.valueOf(0));
+        }
+        */
 
     {
     }
@@ -187,12 +187,22 @@ public class SongViewController {
         int option = JOptionPane.showConfirmDialog(null, message, Strings.DIALOG_ADD_MUSICIAN, JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             MusicianSong ms = new MusicianSong();
-            ms.setMusician_id(musicianBox.getSelectedIndex()+1);
-            ms.setSong_id(getCurrentId());
+            ms.setMusician_id(((Musician)musicianBox.getSelectedItem()).getId());
+            ms.setSong_id(getCurrentSong().getId());
             Double fee = null;
             try {
                 fee = Double.parseDouble(feeShare.getText());
-                ms.setFee_share(fee);
+                if (fee < 0 || fee > 1) { /////////////////////////////////////////////////////////////////////////////////// maxFee
+                    Application.showMessage(Strings.INPUT_WRONG_SHARE);
+                } else {
+                    ms.setFee_share(fee);
+                    try {
+                        Application.self.musicianSongRepository.insert(ms);
+                        Application.showMessage(Strings.DIALOG_MUSICIAN_ADDED_TO_SONG);
+                    } catch (Exception ex) {
+                        Application.showMessage(ex.getMessage());
+                    }
+                }
 
             } catch (NumberFormatException ex) {
                 Application.showMessage(Strings.DIALOG_NUMBER_FORMAT_ERROR);
@@ -201,12 +211,7 @@ public class SongViewController {
                 return;
             }
 
-            try {
-                Application.self.musicianSongRepository.insert(ms);
-                Application.showMessage(Strings.DIALOG_MUSICIAN_ADDED_TO_SONG);
-            } catch (Exception ex) {
-                Application.showMessage(ex.getMessage());
-            }
+
             repaintDetails();
         }
 

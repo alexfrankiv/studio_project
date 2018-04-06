@@ -40,23 +40,15 @@ public class SongDetailsController  extends JDialog{
     private JTextField authorInput;
 
     private Song currentSong;
-    public SongDetailsController( boolean createNew, long id ){
-        
-        
-        assert(!createNew);
-        
-        this.createNew = createNew;
-        
-        this.currentSong = Application.self.songService.getBy(id);
-        
+
+    public SongDetailsController(Song song ){
+        this.createNew = false;
+        this.currentSong = song;
         setup();
-        
-        
-        
     }
-    public SongDetailsController(boolean createNew){
-        assert(createNew);
-        this.createNew = createNew;
+
+    public SongDetailsController(){
+        this.createNew = true;
         setup();
     }
     
@@ -66,7 +58,6 @@ public class SongDetailsController  extends JDialog{
         getRootPane().setDefaultButton(buttonOK);
 
         buttonOK.addActionListener(e -> onOK());
-
         buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
@@ -80,12 +71,6 @@ public class SongDetailsController  extends JDialog{
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
-
-
-
-
-        
-
 
     private void setupComponents() {
 
@@ -168,12 +153,12 @@ public class SongDetailsController  extends JDialog{
     }
 
     public static void presentDialog(boolean createNew) {
-        SongDetailsController dialog = new SongDetailsController(createNew);
+        SongDetailsController dialog = new SongDetailsController();
         doPresent(dialog);
     }
 
-    public static void presentDialog(boolean createNew, long id) {
-        SongDetailsController dialog = new SongDetailsController(createNew, id);
+    public static void presentDialog(boolean createNew, Song song) {
+        SongDetailsController dialog = new SongDetailsController(song);
         doPresent(dialog);
     }
 

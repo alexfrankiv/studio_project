@@ -34,8 +34,9 @@ public class Strings {
     public static final String MENU_HELP_ABOUT = "About";
 
     public static final String DIALOG_NEW_PRICE = "Please specify new price: ";
-    public static final String DIALOG_NUMBER_FORMAT_ERROR = "Please specify correct number!";
-    public static final String DIALOG_INVALID_NUMBER_ERROR = "Please specify number between 0 and 1!";
+    public static final String DIALOG_NUMBER_FORMAT_ERROR = "Please input a correct number";
+    public static final String DIALOG_INVALID_NUMBER_ERROR = "Please input a number between 0 and 1";
+    public static final String DIALOG_MUSICIAN_REMOVED_FROM_SONG = "Artist's fee share removed from this song";
     public static final String DIALOG_ILLEGAL_PRICE_CHANGE_ERROR = "Cannot change price more often than once a day";
     public static final String DIALOG_EMPTY_NAME_ERROR = "Please specify name";
     public static final String DIALOG_EMPTY_DATE_ERROR = "Please specify date";

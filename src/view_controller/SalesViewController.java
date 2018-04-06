@@ -35,10 +35,10 @@ public class SalesViewController {
 	public SalesViewController() {
 		contentView = new JPanel();
 		contentView.setBorder(new EmptyBorder(5, 5, 5, 5));
-		initialize();
+		setup();
 	}
 
-	private void initialize( ) {
+	private void setup( ) {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 103, 103, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{15, 0, 0, 0, 0, 0, 0};

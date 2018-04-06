@@ -18,6 +18,8 @@ public class MainController {
     private ScreenCode currentWindowCode;
 
     private JMenuItem editCurrentAlbum;
+    private JMenuItem songMusicianShareMenu;
+    private JMenuItem songEditCurrent;
 
     public void createAndShowGUI() {
         //Create and set up the window.
@@ -45,6 +47,13 @@ public class MainController {
             editCurrentAlbum.setEnabled(true);
         } else {
             editCurrentAlbum.setEnabled(false);
+        }
+        if (currentWindowCode == ScreenCode.SONG) {
+            songEditCurrent.setEnabled(true);
+            songMusicianShareMenu.setEnabled(true);
+        } else {
+            songEditCurrent.setEnabled(false);
+            songMusicianShareMenu.setEnabled(false);
         }
         frame.pack();
         frame.setVisible(true);
@@ -98,19 +107,20 @@ public class MainController {
         JMenuItem songNewItem = new JMenuItem(Strings.MENU_SONG_NEW);
         songNewItem.addActionListener(e -> {
             SongDetailsController.presentDialog(true);
-            Application.self.salesNewController.initialize();
+            Application.self.salesNewController.setup();
         });
         songMenu.add(songNewItem);
 
-        JMenuItem songEditCurrent = new JMenuItem(Strings.MENU_SONG_EDIT);
+        songEditCurrent = new JMenuItem(Strings.MENU_SONG_EDIT);
         songEditCurrent.addActionListener(e -> SongDetailsController.presentDialog(false,
-                Application.self.songViewController.getCurrentId()));
+                Application.self.songViewController.getCurrentSong()));
+        songEditCurrent.setEnabled(false);
         songMenu.add(songEditCurrent);
 
-        JMenuItem songMusicianShareMenu = new JMenuItem(Strings.MENU_MUSICIAN_SHARE);
-        songMusicianShareMenu.addActionListener(e -> SongMusicianController.presentDialog(Application.self.songViewController.getCurrentId()));
+        songMusicianShareMenu = new JMenuItem(Strings.MENU_MUSICIAN_SHARE);
+        songMusicianShareMenu.addActionListener(e -> SongMusicianController.presentDialog(Application.self.songViewController.getCurrentSong()));
         songMenu.add(songMusicianShareMenu);
-
+        songMusicianShareMenu.setEnabled(false);
         menuBar.add(songMenu);
 
         //sales menu
@@ -166,12 +176,14 @@ public class MainController {
         });
         musicianMenu.add(musicianViewItem);
 
+        /*
         JMenuItem newMusician = new JMenuItem("New..."); //TODO
         newMusician.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
         musicianMenu.add(newMusician);
         JMenuItem editMusician = new JMenuItem("Edit..."); //TODO
         editMusician.addActionListener(e -> Application.showMessage(Strings.UNDER_CONSTRUCTION));
         musicianMenu.add(editMusician);
+        */
         menuBar.add(musicianMenu);
 
 
