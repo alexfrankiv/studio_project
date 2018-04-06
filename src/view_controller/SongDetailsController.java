@@ -91,9 +91,6 @@ public class SongDetailsController  extends JDialog{
 
         albums = Application.self.albumService.all();
 
-
-
-
         DefaultComboBoxModel<Album> dla = new DefaultComboBoxModel<>();
         for (Album a : albums){
             dla.addElement(a);
@@ -124,19 +121,21 @@ public class SongDetailsController  extends JDialog{
         if (nameInput.getText().isEmpty()|| nameInput.getText()==null){
             Application.showMessage(Strings.DIALOG_EMPTY_NAME_ERROR);
             return;
+        } else {
+            song.setName(nameInput.getText());
         }
         if(authorInput.getText().isEmpty() || authorInput.getText() == null){
             Application.showMessage(Strings.DIALOG_EMPTY_AUTHOR_ERROR);
             return ;
-
+        } else {
+            song.setAuthor(authorInput.getText());
         }
-        song.setName(nameInput.getText());
 
-
-        song.setAlbum_id(albumBox.getSelectedIndex()+1 );
-        if(song.getAlbum_id()<0) {
+        song.setAlbum_id(((Album)albumBox.getSelectedItem()).getId());
+        if(song.getAlbum_id() < 0) {
             Application.showMessage(Strings.DIALOG_WRONG_ALBUM_ERROR);
-            return;}
+            return;
+        }
 
 
 

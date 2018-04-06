@@ -47,9 +47,9 @@ public class SongRepository implements ISongRepository {
     public boolean insert(Song song) throws Exception {
         Connection c = DBConnector.shared.getConnect();
         PreparedStatement ps = c.prepareStatement(insert);
-        ps.setString(1,song.getAuthor());
-        ps.setString(2,song.getName());
-        ps.setLong(3,song.getAlbum_id());
+        ps.setString(1, song.getAuthor());
+        ps.setString(2, song.getName());
+        ps.setLong(3, song.getAlbum_id());
         int songCode = ps.executeUpdate();
         return songCode== Constants.DB_SUCCESS_EXECUTION_CODE;
 
@@ -73,7 +73,7 @@ public class SongRepository implements ISongRepository {
 
 
     // SQL queries
-    private static final String  getAll = "SELECT * FROM song ;";
+    private static final String  getAll = "SELECT * FROM song;";
     private static final  String getMusicians  = "SELECT *  FROM musician JOIN musician_song ON musician.id = musician_song.musician_id WHERE song_id=?;";
     private static final String insert = "INSERT INTO song(author,name,album_id) VALUES(?,?,?);";
 private static final String getById = "SELECT * FROM song WHERE id=?;";

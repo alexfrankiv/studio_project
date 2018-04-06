@@ -48,7 +48,6 @@ public class SalesNewController {
     public SalesNewController() {
         panel = new JPanel();
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        initialize();
     }
 
     public void initialize() {

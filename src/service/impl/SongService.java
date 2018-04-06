@@ -47,6 +47,8 @@ public class SongService implements ISongService {
         try {
             exitCode = Application.self.songRepository.insert(song);
         } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("+++++++");
             throw new IllegalStateException(Strings.DIALOG_FAILED_INSERTIONS_SONG);
         }
         return exitCode;

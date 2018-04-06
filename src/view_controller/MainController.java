@@ -96,7 +96,10 @@ public class MainController {
         songMenu.add(viewSongs);
 
         JMenuItem songNewItem = new JMenuItem(Strings.MENU_SONG_NEW);
-        songNewItem.addActionListener(e -> SongDetailsController.presentDialog(true));
+        songNewItem.addActionListener(e -> {
+            SongDetailsController.presentDialog(true);
+            Application.self.salesNewController.initialize();
+        });
         songMenu.add(songNewItem);
 
         JMenuItem songEditCurrent = new JMenuItem(Strings.MENU_SONG_EDIT);
