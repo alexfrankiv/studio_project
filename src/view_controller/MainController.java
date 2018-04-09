@@ -38,7 +38,10 @@ public class MainController {
         Application.self.salesLicenseController = new SalesLicenseController();
         Application.self.musicianViewController = new MusicianViewController();
 //        frame.add(Application.self.albumViewController.getContentView());
-//
+        Application.self.salesViewController.setup();
+        Application.self.salesNewController.setup();
+        Application.self.salesLicenseController.setup();
+
         update();
     }
 
@@ -149,7 +152,6 @@ public class MainController {
                 frame.remove(currentWindow);
             }
             currentWindow = Application.self.salesNewController.getContentView();
-            Application.self.salesNewController.setup();
             frame.add(currentWindow);
             currentWindowCode = ScreenCode.SALE;
             update();
@@ -162,8 +164,7 @@ public class MainController {
 
         menuBar.add(salesMenu);
 
-        //dummy for Musician part
-        //FIXME: to be implemented by Arthur
+        //musician menu
         JMenu musicianMenu = new JMenu(Strings.MENU_MUSICIAN);
         JMenuItem musicianViewItem = new JMenuItem(Strings.MENU_MUSICIAN_VIEW);
         musicianViewItem.addActionListener(e -> {

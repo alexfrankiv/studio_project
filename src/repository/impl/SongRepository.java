@@ -96,11 +96,8 @@ private static final String getById = "SELECT * FROM song WHERE id=?;";
         while(resultSet.next()){
             musList.add(musicianFrom(resultSet));
         }
+        ((ArrayList<Musician>) musList).trimToSize();
         return musList;
-
-
-
-
     }
     private Musician musicianFrom(ResultSet resultSet) throws SQLException {
         Musician musician = new Musician();

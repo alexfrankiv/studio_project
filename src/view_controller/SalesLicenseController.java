@@ -39,9 +39,7 @@ public class SalesLicenseController extends JDialog {
     boolean changeUnderway;
     boolean hideCheck;
 
-    SalesLicenseController() {
-        initialize();
-    }
+    SalesLicenseController() {}
 
     public void display() {
         hideCheck = true;
@@ -54,7 +52,7 @@ public class SalesLicenseController extends JDialog {
     }
 
 
-    public void initialize() {
+    public void setup() {
         setTitle(Strings.SALES_LICENSE_TITLE);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(150, 150, 800, 550);

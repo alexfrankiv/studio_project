@@ -57,6 +57,12 @@ public class SongMusicianController extends JFrame {
         musicianList.addListSelectionListener(e -> didSelectListItem(e));
         musicianList.setSelectedIndex(0);
         changeShare.addActionListener(e -> changeShare(e));
+        if (dataSource.isEmpty()) {
+            changeShare.setEnabled(false);
+        }
+        else {
+            changeShare.setEnabled(true);
+        }
     }
 
     private void changeShare(ActionEvent e) {
@@ -106,17 +112,13 @@ public class SongMusicianController extends JFrame {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-
             }
-
         }
     }
 
-    private void  reloadData(){
+    private void reloadData(){
         try {
            // System.out.println("2");
-
-
             dataSource = Application.self.songRepository.getSongMusicians(this.song.getId());
            // System.out.println("3");
         }

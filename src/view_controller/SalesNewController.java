@@ -420,6 +420,8 @@ public class SalesNewController {
                 Application.self.saleService.removeSale(pr.get(0).getRevenue().getSale());
             }
             else {
+                ((License)lp.getSale()).setPaid(false);
+                Application.self.saleRepository.update(lp.getSale());
                 Application.self.flowRepository.remove(lp);
             }
         }
